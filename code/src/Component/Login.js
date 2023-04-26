@@ -1,0 +1,87 @@
+import { useState } from "react";
+import firebaseDb from "../firebase/config";
+// import NavbarBeforeLogin from "./BeforeLogin";
+import swal from 'sweetalert';
+
+
+function Login() {
+
+    const initialFieldValues = {
+        username: '',
+        password: '',
+    }
+    const [values, setValues] = useState(initialFieldValues);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        firebaseDb.child('users').on('value', async snapshot => {
+            if (snapshot.val() != null) {
+                const users =  snapshot.val();
+                console.log(users)
+                let success = false;
+                Object.keys(users).forEach(async (key) => {
+                    if((users[key].username == values.username || users[key].email == values.username) && users[key].password == values.password){
+                        console.log(users)
+                        success = true;
+                        window.localStorage.setItem("login_success","true");
+
+                        window.localStorage.setItem("UUID", key);
+                        await swal({text: "Login Successfully", icon: "success", className: "sweat-bg-color"});
+                        window.location.href = '/';
+                    }
+                })
+                if(success != true){
+                    await swal({text: "Invalid Credentials", icon: "error"});
+                }
+            }
+        })
+    }
+
+    return(
+        // <div className="Theme_ui">
+            <div className="Create-Collection-section row">
+                <div className="collection-section-background row">
+                    {/* <div className="nav-section-blur row"></div> */}
+                    {/* <NavbarBeforeLogin/> */}
+                    <div className="Create-Collection-Container">
+                            <div className="container">
+                                <div className="Create-Collection-Title row text-center"> 
+                                    <h1 className="Create-collection-head">Login Account</h1> 
+                                </div>
+                                    <div className="row">
+                                        <div className="col-md-5 mx-auto">
+                                        <form className="justify-content-center" onSubmit={(e) => handleSubmit(e)}>
+                                            <div className="form-group">
+                                                <label className="field-title">UserName</label>
+                                                <input type="text" className="input-register" placeholder="Enter UserName or Email" onChange={(e)=> setValues({...values, username: e.target.value })} required/>
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="field-title">Password</label>
+                                                <input type="password" className="input-register" placeholder="Enter Password" onChange={(e)=> setValues({...values, password: e.target.value })} required/>
+                                            </div>
+                                            <div className="form-group text-center">
+                                                <br/>
+                                                <div className="intro-button">
+                                                    <button type="submit" className="btn btn-primary field-title" style={{width:'40%'}}>Login</button>
+                                               </div>
+                                            </div>
+                                           
+                                            
+                                            </form>           
+                                        </div>
+                                    </div>
+                                
+                
+                                
+                            </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        // </div>
+    )
+}
+
+export default Login;
