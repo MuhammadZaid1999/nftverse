@@ -18,6 +18,15 @@ module.exports = {
       gasPrice: 20000000000,
       accounts: {mnemonic: process.env.mnemonic}
     },
+    goerli: {
+      url: "https://goerli.infura.io/v3/" + process.env.INFURA_PROJECT_ID,
+      accounts: {
+        mnemonic: process.env.mnemonic,
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 20,
+      },
+    },
   },
   etherscan: {
     apiKey: process.env.API_KEY  // based on network
