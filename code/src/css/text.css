@@ -9,6 +9,9 @@
   margin-top: 3% ;
 }
 
+.mt-15{
+  margin-top: 10%;
+}
 .text-white{
   color:  white;;
 }
@@ -253,7 +256,7 @@ nav{
 }
 
 .lottery-h1{
-  padding: 10% 0 3% 0;
+  padding: 0 0 3% 0;
   font-size: 36px;
   font-weight: bold;
   width: 100%;
@@ -267,7 +270,7 @@ nav{
 }
 
 .nftGenerator-h1{
-  padding: 10% 0 3% 0;
+  padding: 0% 0 3% 0;
   font-size: 36px;
   font-weight: bold;
   width: 100%;

@@ -88,7 +88,24 @@ export const NFTMinting = async(contract, accounts, transaction)=>{
     .send({
         from : accounts[0],
         value: transaction.mintFee,
-        maxPriorityFeePerGas: web3.utils.toHex(String(1500000000))
+    });
+    return receipt;   
+}
+
+export const ListNFT = async(contract, accounts, transaction)=>{
+    console.log("before transaction");
+    const receipt =  await contract.methods.listNFT(transaction.tokenID, transaction.price)
+    .send({
+        from: accounts[0],
+    });
+    return receipt;   
+}
+
+export const CancelListing = async(contract, accounts, transaction)=>{
+    console.log("before transaction");
+    const receipt =  await contract.methods.cancelListing(transaction.tokenID)
+    .send({
+        from: accounts[0],
     });
     return receipt;   
 }
@@ -110,6 +127,20 @@ function loadData(dispatch){
 }
 
 
+export function getNFTs(){
+    let nfts = [];
+    firebaseDb.child('nfts').on('value', snapshot => {
+        if (snapshot.val() != null) {
+            let data = snapshot.val();
+            Object.keys(data).forEach((key) => {
+              nfts = data[key];   
+            })
+        }
+    })
+    return nfts;
+} 
+
+
 export const addOrEdit = (obj, msg) => {
     const currentId = window.localStorage.getItem('UUID')
     firebaseDb.child(`users/${currentId}`).set(
@@ -122,6 +153,20 @@ export const addOrEdit = (obj, msg) => {
                 console.log(msg)
             } 
         }
+    )
+}
+
+export const addNFTInDB = (obj, msg) => {
+    firebaseDb.child('nfts/-NV4hOCjMnVfFMMQc9TI').set(
+        obj,
+        err => {
+            if (err){
+                console.log("Error ",err)
+            }
+            else{
+                console.log(msg)
+            } 
+        },
     )
 }
 
