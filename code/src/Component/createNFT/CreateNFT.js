@@ -140,6 +140,9 @@ function CreateNFT(){
             console.log(`base Uri = ${baseUri}`);
             
             try {  
+                let nfts = getNFTs();
+                console.log(nfts);
+                
                 let nft_id = await contract.methods._tokenIds().call();
                 nft_id++;
                 const newTransaction = {
@@ -151,8 +154,6 @@ function CreateNFT(){
                     user_data.nfts.push({id: nft_id ,name: data.name, image:`https://gateway.pinata.cloud/ipfs/${String(imageHash)}`, description: data.description, network: data.network ,attributes: data.attributes});
                     addOrEdit(user_data, "NFT Created");
                     
-                    let nfts = getNFTs();
-                    console.log(nfts);
                     nfts.push({id: nft_id ,name: data.name, image:`https://gateway.pinata.cloud/ipfs/${String(imageHash)}`, description: data.description, network: data.network ,attributes: data.attributes, saleType: 1})
                     addNFTInDB(nfts, "NFT Added");
                     

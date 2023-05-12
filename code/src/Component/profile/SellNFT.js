@@ -74,6 +74,11 @@ function SellNFT(){
     const cancelListing = async (e) => {
         e.preventDefault();
 
+        let nfts = getNFTs();
+        let objIndex = nfts.findIndex((obj => (obj.id === nft.id)));
+        nfts[objIndex].saleType = 1;
+        console.log(nfts);
+
         const owner = await contract.methods.ownerOf(nft.id).call();
         const isListed = await contract.methods.getNFT_Details(nft.id).call(); 
 
@@ -93,6 +98,8 @@ function SellNFT(){
                 }
                 const transaction = await CancelListing(contract, accounts, newTransaction);
                 if(transaction.status == true){
+                    addNFTInDB(nfts, "NFT Updated");
+
                     setListed(false);
                     swal({text: "NFT Listing cancel Successfully", icon: "success", className: "sweat-bg-color"});
                 }
