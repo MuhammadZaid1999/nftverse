@@ -54,6 +54,10 @@ function MarketPlace(){
             setNFTs(data);
             console.log(data)
         }
+        else{
+            data = data.filter(obj => (obj.network === network));
+            setNFTs(data);
+        }
     }
 
     const onSalePrice = async (e) => {
