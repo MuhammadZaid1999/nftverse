@@ -1,5 +1,4 @@
 import React from "react";
-import g1 from '../../images/g1.gif';
 import { NavLink } from "react-router-dom";
 import Username from "../navbar/Username";
 import { useStore } from "../../context/GlobalState";
@@ -178,16 +177,16 @@ function MarketPlace(){
                                         {
                                             nfts.length > 0 ?
                                             nfts.map(obj => (
-                                                <div className="col-sm-3">
-                                                    <div className="my-assets-field">
-                                                        <img className="my-assets-images" src={obj.image} alt ="" style={{marginLeft: "0%"}}/>
-                                                        <div className="my-assets-Title">
-                                                            <span>{obj.name}</span>
-                                                            <div className="intro-button" style={{marginTop:"-6%"}}><button className="btn btn-sm float-end"><NavLink className="nav-link" to="/ViewDetails">Expand Item</NavLink></button></div>
+                                                    <div className="col-sm-3">
+                                                        <div className="my-assets-field">
+                                                            <img className="my-assets-images" src={obj.image} alt ="" style={{marginLeft: "0%"}}/>
+                                                            <div className="my-assets-Title">
+                                                                <span>{obj.name}</span>
+                                                                <div className="intro-button" style={{marginTop:"-6%"}}><button className="btn btn-sm float-end"><a className="nav-link" href={`/ViewDetails?details=${JSON.stringify(obj)}`}>Expand Item</a></button></div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            ))
+                                                ))
                                             : <div className="col-md-12 text-center" style={{marginTop: "5%"}}><h4> no NFT data available!!!</h4></div>
                                         }
                                         

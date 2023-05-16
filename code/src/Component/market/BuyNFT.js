@@ -1,8 +1,88 @@
-
-import g4 from '../../images/g4.gif';
-import etherscan from '../../images/etherscan-logo.jpg';
+import { useStore } from '../../context/GlobalState';
+import { useEffect, useState } from 'react';
+import { NFTVERSE_POLYGON_ADDRESS, NFTVERSE_BSC_ADDRESS, NFTVERSE_ETHEREUM_ADDRESS } from "../../contract/NFTVERSE";
+import swal from 'sweetalert';
+import { addNFTInDB, BuyNFT, getNFTs, getOwnerNFTs, addOrEdit, addOrEdit1 } from '../../store/asyncActions';
 
 function ViewDetails(){
+
+    const [{web3, contract, accounts, user_data}] = useStore();
+
+    const params = new URLSearchParams(window.location.search);
+    const nft = JSON.parse(params.get("details"));
+    
+    const [currentPrice, setCurrentPrice] = useState(0);
+    const [owner, setOwner] = useState(""); 
+    const [pruchase, setPurchase] = useState(false); 
+
+    useEffect(() => {
+        (async() => {
+            if(contract !== null){
+                let price = await contract.methods.viewListing(nft.id).call();
+                price /= 10**18;
+                setCurrentPrice(price);
+
+                const owner = await contract.methods.ownerOf(nft.id).call();
+                setOwner(owner);
+            }
+        })()
+    },[contract, pruchase]);
+
+
+    const buyNFT = async(tokenId, price) => {
+
+        let nfts = getNFTs();
+        let objIndex = nfts.findIndex((obj => (obj.id === tokenId)));
+        nfts[objIndex].saleType = 0;
+        console.log("NFTs Updated List", nfts);
+
+        let {owner_data, UUID} = getOwnerNFTs(owner);
+        console.log("owner_data", owner_data)
+
+        const _nft = await contract.methods.getNFT_Details(tokenId).call();
+        
+        if(user_data.wallet_address !== accounts[0]){
+            swal({text: "Please Connect with correct Wallet", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(_nft.listed === false){
+            swal({text: "this NFT is not on Selling", icon: "warning", className: "sweat-bg-color"});
+        } 
+        else if((_nft.price / 10**18) !== price){
+            swal({text: "Invalid Buying Price", icon: "warning", className: "sweat-bg-color"});
+        } 
+        else if(_nft.owner === accounts[0]){
+            swal({text: "Owner cannot Buy NFT", icon: "warning", className: "sweat-bg-color"});
+        } 
+        else{
+            try {  
+                const ethPrice = await web3.utils.toWei(String(price), "ether");
+                const newTransaction = {
+                    tokenID: tokenId,
+                    price: ethPrice
+                }
+                const transaction = await BuyNFT(contract, accounts, newTransaction);
+                if(transaction.status == true){
+                    user_data.nfts.push({id: tokenId ,name: nft.name, image: nft.image, description: nft.description, network: nft.network ,attributes: nft.attributes});
+                    console.log("added on new User", user_data.nfts);
+                    addOrEdit(user_data, "NFT Added");
+
+                    let index = owner_data.nfts.findIndex((obj => (obj.id === tokenId)));
+                    owner_data.nfts.splice(index, 1);
+                    console.log("delete nft previsous user", owner_data);
+                    addOrEdit1(UUID, owner_data, "NFT Deleted");
+
+                    addNFTInDB(nfts, "NFT List Updated");
+
+                    setPurchase(true);
+                    swal({text: "NFT Purchased Successfully", icon: "success", className: "sweat-bg-color"});
+                }
+            }catch (error){
+                console.log("error trax = ",error); 
+                swal({text: error.message, icon: "error", className: "sweat-bg-color"});
+            }
+        }
+    }
+
     return(
         // <div className="Theme_ui">
             <div className="Create-Collection-section row">
@@ -13,19 +93,19 @@ function ViewDetails(){
                         <div className="container"> 
                             <div className="row">
                                 <div className="p-3 col-md-6">
-                                    <img className="my-assets-images" src={g4} alt=""/>
+                                    <img className="my-assets-images" src={nft.image} alt=""/>
                                 </div>
                                 <div className="p-3 col-md-6">
-                                    <a style={{color: "rgb(218,20,205)"}}>Octapus</a>
-                                    <h2>Octapus Mars</h2>
-                                    <span>Owned by</span><span style={{color: "rgb(218,20,205)"}}> xyz <br/><br/></span>
+                                    <a style={{color: "rgb(218,20,205)"}}>NFTVERSE</a>
+                                    <h2>{nft.name}</h2>
+                                    <span>Owned by</span><span style={{color: "rgb(218,20,205)"}}> {owner.slice(0,5)}...........{owner.slice(37,42)} <br/><br/></span>
                                     <div class="card">
                                         <div className="card-body" style={{backgroundColor:'#120124'}}>
                                             <h6 className="card-subtitle mb-2 text-muted">Current Price</h6>
-                                            <h3 className="card-title"><b>0.00001 ETH</b></h3>
-                                            <div className="intro-button">
-                                            <button type="button" className="btn btn-primary" style={{width:"48%"}}>Buy Now</button>
-                                            <button type="button" className="btn btn-primary" style={{width:"48%"}}>Place Bid</button>
+                                            <h3 className="card-title"><b>{currentPrice} ETH</b></h3>
+                                            <div className="intro-button">   
+                                            <button type="button" className="btn btn-primary" style={{width:"48%"}} disabled={user_data.wallet_address === owner || currentPrice === 0 ? true : false} onClick={() => buyNFT(nft.id, currentPrice)}>Buy Now</button>
+                                            <button type="button" className="btn btn-primary" style={{width:"48%"}} disabled={user_data.wallet_address === owner ? true : false} data-bs-toggle="modal" data-bs-target="#exampleModal">Place Bid</button>
                                             </div>
                                         </div>
                                     </div>   
@@ -116,22 +196,30 @@ function ViewDetails(){
                                            <b>Description</b>
                                         </div>
                                         <div className="card-body" style={{backgroundColor:'#120124'}}>
-                                            <p>By <b>HAVAH_Vega</b></p>
-                                            <p>Life is like fishing. The wise ones become the fishermen while the foolish ones become the fish!</p>
+                                            <p>{nft.description}</p>
                                         </div>
                                     </div> 
                                     <br/>
                                     <div class="card">
                                         <div className="card-header" style={{border:'1px solid white', backgroundColor:'#120124'}}>
-                                           <b>About Octapus</b>
+                                           <b>Attributes</b>
                                         </div>
                                         <div className="card-body" style={{backgroundColor:'#120124'}}>
-                                            <p>This NFT's collection is created on Ethereum Blockchain
-                                            &nbsp;<a target="_blank" href="img_forest.jpg"><img src={etherscan} width="30px" alt=""/></a>
-                                            </p>
-                                           
-                                        </div>
-                                    </div>     
+                                            <div className="row">
+                                                {
+                                                    nft.attributes.length > 0 ? 
+                                                    nft.attributes.map(attr => (
+                                                        <div className="col-md-2 d-flex flex-col bd-highlight mb-3">
+                                                            <div className="p-2 bd-highlight" style={{border: "1px solid white", borderRadius: "10%"}}>
+                                                                <h6 className="text-center">{attr.trait_type}</h6> 
+                                                                <h6 className="text-center text-muted">{attr.value}</h6>
+                                                            </div>
+                                                        </div> 
+                                                    )) : null
+                                                }
+                                            </div>
+                                        </div>  
+                                    </div>   
                                 </div>
                                 <div className="p-3 col-md-6">
                                     <div class="card">
@@ -141,11 +229,16 @@ function ViewDetails(){
                                         <div className="card-body" style={{backgroundColor:'#120124'}}>
                                             <p>
                                                 Contract Address
-                                                <span style={{float: 'right'}}>0xdb6f...8848</span>
+                                                <span style={{float: 'right'}}>{
+                                                    nft.network === 80001 ? 
+                                                    NFTVERSE_POLYGON_ADDRESS.slice(0,5)+"..........."+NFTVERSE_POLYGON_ADDRESS.slice(37,42) : 
+                                                    nft.network === 5 ? NFTVERSE_ETHEREUM_ADDRESS.slice(0,5)+"..........."+NFTVERSE_ETHEREUM_ADDRESS.slice(37,42) : 
+                                                    NFTVERSE_BSC_ADDRESS.slice(0,5)+"..........."+NFTVERSE_BSC_ADDRESS.slice(37,42) 
+                                                }</span>
                                             </p>
                                             <p>
                                                 Token ID
-                                                <span style={{float: 'right'}}>55</span>
+                                                <span style={{float: 'right'}}>{nft.id}</span>
                                             </p>
                                             <p>
                                                 Token Standard 
@@ -153,21 +246,53 @@ function ViewDetails(){
                                             </p>
                                             <p>
                                                 Network 
-                                                <span style={{float: 'right'}}>ETHEREUM</span>
+                                                <span style={{float: 'right'}}>{
+                                                    nft.network === 80001 ? "Polygon (Matic)" : nft.network === 5 ? "Ethereum (Goreli)" : "Binance Smart Chain (Testnet)"  
+                                                }</span>
                                             </p>
                                             <p>
                                                 Creator Fee 
-                                                <span style={{float: 'right'}}>2.5%</span>
-                                            </p>
-                                            <p>
-                                                Catergory 
-                                                <span style={{float: 'right'}}>Arts</span>
+                                                <span style={{float: 'right'}}>1%</span>
                                             </p>
                                         </div>
                                     </div> 
                                     <br/>
                                 </div>
                             </div> 
+                        </div>
+                    </div>
+                </div>
+
+                <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalLabel">Place Bid</h5>
+                                <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="row">
+                                    <div className="col-md mx-auto">
+                                        <form className="justify-content-center">
+                                            <div className="form-group">
+                                                <label className="lottery-form-titles">Bid Price:</label>
+                                                <input type="number" className="input-text-lottery" placeholder="Enter Bid Price" step=".0000000001"/>
+                                            </div>
+                                            
+                                            <div className="form-group text-center">
+                                                <div className="staking-button">
+                                                    <div className="intro-button">
+                                                        <button type="submit" className="btn btn-primary field-title" style={{width:'40%'}}>Bid Now</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>   
+                                    </div>
+                                </div>
+                            </div>
+                            {/* <div className="modal-footer">
+                                <button type="button" className="btn custom-btn" onClick={(e) => generateArtWork(e)}>Generate ArtWork</button>
+                            </div> */}
                         </div>
                     </div>
                 </div>

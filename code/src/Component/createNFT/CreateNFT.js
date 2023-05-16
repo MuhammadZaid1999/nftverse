@@ -123,6 +123,9 @@ function CreateNFT(){
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        let nfts = getNFTs();
+        console.log(nfts);
+
         let user_balance = await web3.eth.getBalance(accounts[0]);
         user_balance /= 10 ** 18;
      
@@ -140,8 +143,6 @@ function CreateNFT(){
             console.log(`base Uri = ${baseUri}`);
             
             try {  
-                let nfts = getNFTs();
-                console.log(nfts);
                 
                 let nft_id = await contract.methods._tokenIds().call();
                 nft_id++;
@@ -257,7 +258,7 @@ function CreateNFT(){
                                     <div className="category-field">
                                         <br/>
                                         <div className="intro-button">
-                                           <button type="button" className="btn btn-primary" onClick={handleSubmit}>Create an NFT</button>
+                                           <button type="button" className="btn btn-primary" onClick={(e)=>handleSubmit(e)}>Create an NFT</button>
                                         </div>
                                     </div>
                                 </div>

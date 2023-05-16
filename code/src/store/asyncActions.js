@@ -83,7 +83,6 @@ const getNetworkData = (networkId, dispatch) => {
 
 
 export const NFTMinting = async(contract, accounts, transaction)=>{
-    console.log("before transaction");
     const receipt =  await contract.methods.createNFT(transaction.tokenUri)
     .send({
         from : accounts[0],
@@ -93,7 +92,6 @@ export const NFTMinting = async(contract, accounts, transaction)=>{
 }
 
 export const ListNFT = async(contract, accounts, transaction)=>{
-    console.log("before transaction");
     const receipt =  await contract.methods.listNFT(transaction.tokenID, transaction.price)
     .send({
         from: accounts[0],
@@ -102,10 +100,18 @@ export const ListNFT = async(contract, accounts, transaction)=>{
 }
 
 export const CancelListing = async(contract, accounts, transaction)=>{
-    console.log("before transaction");
     const receipt =  await contract.methods.cancelListing(transaction.tokenID)
     .send({
         from: accounts[0],
+    });
+    return receipt;   
+}
+
+export const BuyNFT = async(contract, accounts, transaction)=>{
+    const receipt =  await contract.methods.buyNFT(transaction.tokenID)
+    .send({
+        from: accounts[0],
+        value: transaction.price
     });
     return receipt;   
 }
@@ -124,6 +130,36 @@ function loadData(dispatch){
              )
         }
     })
+}
+
+
+export function getOwnerNFTs(wallet){
+    let owner_data = null, UUID = null;
+    firebaseDb.child('users').on('value', snapshot => {
+        if (snapshot.val() != null) {
+            let users =  snapshot.val();
+             Object.keys(users).forEach((key) => {
+                if(users[key].wallet_address === wallet){
+                    owner_data = users[key];
+                    UUID = key
+                }    
+            })
+        }
+    })
+    return {owner_data, UUID};
+}
+export const addOrEdit1 = (UUID, obj, msg) => {
+    firebaseDb.child(`users/${UUID}`).set(
+        obj,
+        err => {
+            if (err){
+                console.log("Error ",err)
+            }
+            else{
+                console.log(msg)
+            } 
+        }
+    )
 }
 
 
