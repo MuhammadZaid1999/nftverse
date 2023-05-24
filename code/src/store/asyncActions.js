@@ -116,6 +116,15 @@ export const BuyNFT = async(contract, accounts, transaction)=>{
     return receipt;   
 }
 
+export const PlaceBid = async(contract, accounts, transaction)=>{
+    const receipt =  await contract.methods.placeBid(transaction.tokenID)
+    .send({
+        from: accounts[0],
+        value: transaction.price
+    });
+    return receipt;   
+}
+
 
 function loadData(dispatch){
     firebaseDb.child('users').on('value', snapshot => {

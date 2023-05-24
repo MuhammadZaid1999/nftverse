@@ -14,6 +14,9 @@ function SellNFT(){
 
     const [listed, setListed] = useState(false);
     const [currentPrice, setCurrentPrice] = useState(0); 
+
+    const[offers, setOffers] = useState([]);
+
     useEffect(() => {
         (async() => {
             if(contract !== null){
@@ -22,6 +25,9 @@ function SellNFT(){
                 if(price > 0){
                     setListed(true);
                 }
+
+                const _offers = await contract.methods.getOffers(nft.id).call();
+                setOffers(_offers);
             }
         })()
     },[contract, listed])
@@ -145,78 +151,36 @@ function SellNFT(){
                                             <b>Offers</b>
                                         </div>
                                         <div className="card-body" style={{ backgroundColor:'#120124', height:'165px', overflowY:'scroll', scrollbarColor: 'red yellow'}}>
-                                        <table className="table table-fixed table-hover table-dark">
-                                            <thead>
-                                                <tr>
-                                                <th scope="col" style={{ backgroundColor:'#120124'}}>#</th>
-                                                <th scope="col" style={{ backgroundColor:'#120124'}}>Price</th>
-                                                <th scope="col" style={{ backgroundColor:'#120124'}}>From</th>
-                                                <th scope="col" style={{ backgroundColor:'#120124'}}></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>1</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.000012 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>abcd</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                               </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>2</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.00015 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>efgh</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                                </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>1</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.000012 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>abcd</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                               </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>2</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.00015 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>efgh</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                                </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>1</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.000012 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>abcd</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                               </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>2</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.00015 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>efgh</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                                </td>
-                                                </tr>
-                                            </tbody>
+                                        {
+                                            offers.length > 0 ?
+                                            <table className="table table-fixed table-hover table-dark">
+                                                <thead>
+                                                    <tr>
+                                                    <th scope="col" style={{ backgroundColor:'#120124'}}>#</th>
+                                                    <th scope="col" style={{ backgroundColor:'#120124'}}>Price</th>
+                                                    <th scope="col" style={{ backgroundColor:'#120124'}}>From</th>
+                                                    <th scope="col" style={{ backgroundColor:'#120124'}}></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        offers.map((obj, index) => (
+                                                            <tr>
+                                                                <td style={{ backgroundColor:'#120124'}}><b>{index + 1}</b></td>
+                                                                <td style={{ backgroundColor:'#120124'}}><b>{obj.bidPrice / 10 ** 18} ETH</b></td>
+                                                                <td style={{ backgroundColor:'#120124'}}>{obj.bidder.slice(0,5)+".................."+obj.bidder.slice(37,42)}</td>
+                                                                <td style={{ backgroundColor:'#120124'}}>
+                                                                    <div className="intro-button">
+                                                                        <button type="submit" className="btn btn-primary">Accept</button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        )) 
+                                                    }  
+                                                </tbody>
                                             </table>
+                                            : <div className="text-center"><b>No Offer yet !!!</b></div>
+                                        }
                                         </div>
                                     </div>   
                                 </div>

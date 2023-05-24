@@ -2,7 +2,7 @@ import { useStore } from '../../context/GlobalState';
 import { useEffect, useState } from 'react';
 import { NFTVERSE_POLYGON_ADDRESS, NFTVERSE_BSC_ADDRESS, NFTVERSE_ETHEREUM_ADDRESS } from "../../contract/NFTVERSE";
 import swal from 'sweetalert';
-import { addNFTInDB, BuyNFT, getNFTs, getOwnerNFTs, addOrEdit, addOrEdit1 } from '../../store/asyncActions';
+import { addNFTInDB, BuyNFT, PlaceBid ,getNFTs, getOwnerNFTs, addOrEdit, addOrEdit1 } from '../../store/asyncActions';
 
 function ViewDetails(){
 
@@ -15,6 +15,9 @@ function ViewDetails(){
     const [owner, setOwner] = useState(""); 
     const [pruchase, setPurchase] = useState(false); 
 
+    const[offers, setOffers] = useState([]);
+    const [placeOffer, setPlaceOffer] = useState(false); 
+
     useEffect(() => {
         (async() => {
             if(contract !== null){
@@ -24,9 +27,13 @@ function ViewDetails(){
 
                 const owner = await contract.methods.ownerOf(nft.id).call();
                 setOwner(owner);
+
+                const _offers = await contract.methods.getOffers(nft.id).call();
+                console.log(_offers)
+                setOffers(_offers);
             }
         })()
-    },[contract, pruchase]);
+    },[contract, pruchase, placeOffer]);
 
 
     const buyNFT = async(tokenId, price) => {
@@ -83,6 +90,47 @@ function ViewDetails(){
         }
     }
 
+    const [bidPrice, setBidPrice] = useState(0);
+    const placeBid = async (e) => {
+        e.preventDefault();
+
+        const owner = await contract.methods.ownerOf(nft.id).call();
+        let user_balance = await web3.eth.getBalance(accounts[0]);
+        user_balance /= 10 ** 18;
+
+        if(user_data.wallet_address !== accounts[0]){
+            swal({text: "Please Connect with correct Wallet", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(owner === accounts[0]){
+            swal({text: "Owner cannot Bid on NFT", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(user_balance <= 0){
+            swal({text: "Account Balance is not Enough for placing Bid", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(bidPrice <= 0){
+            swal({text: "Bidding Price must be greater than 0", icon: "warning", className: "sweat-bg-color"});
+        }
+
+        else{
+            try {  
+                const ethPrice = await web3.utils.toWei(String(bidPrice), "ether");
+                const newTransaction = {
+                    tokenID: nft.id,
+                    price: ethPrice
+                }
+                console.log(newTransaction)
+                const transaction = await PlaceBid(contract, accounts, newTransaction);
+                if(transaction.status == true){
+                    setPlaceOffer(true);
+                    swal({text: "Bid Placed Successfully", icon: "success", className: "sweat-bg-color"});
+                }
+            }catch (error){
+                console.log("error trax = ",error); 
+                swal({text: error.message, icon: "error", className: "sweat-bg-color"});
+            }
+        }
+    }
+
     return(
         // <div className="Theme_ui">
             <div className="Create-Collection-section row">
@@ -110,85 +158,38 @@ function ViewDetails(){
                                         </div>
                                     </div>   
                                      <br/><br/>
-                                    <div class="card">
+                                     <div class="card">
                                         <div class="card-header" style={{border:'1px solid white', backgroundColor:'#120124'}}>
                                             <b>Offers</b>
                                         </div>
                                         <div className="card-body" style={{ backgroundColor:'#120124', height:'165px', overflowY:'scroll', scrollbarColor: 'red yellow'}}>
-                                        <table className="table table-fixed table-hover table-dark">
-                                            <thead>
-                                                <tr>
-                                                <th scope="col" style={{ backgroundColor:'#120124'}}>#</th>
-                                                <th scope="col" style={{ backgroundColor:'#120124'}}>Price</th>
-                                                <th scope="col" style={{ backgroundColor:'#120124'}}>From</th>
-                                                <th scope="col" style={{ backgroundColor:'#120124'}}></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>1</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.000012 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>abcd</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                               </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>2</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.00015 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>efgh</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                                </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>1</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.000012 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>abcd</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                               </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>2</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.00015 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>efgh</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                                </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>1</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.000012 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>abcd</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                               </td>
-                                                </tr>
-                                                <tr>
-                                                <td style={{ backgroundColor:'#120124'}}><b>2</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}><b>0.00015 ETH</b></td>
-                                                <td style={{ backgroundColor:'#120124'}}>efgh</td>
-                                                <td style={{ backgroundColor:'#120124'}}>
-                                                    <div className="intro-button">
-                                                      <button type="submit" className="btn btn-primary">Accept</button>
-                                                    </div>
-                                                </td>
-                                                </tr>
-                                            </tbody>
+                                        {
+                                            offers.length > 0 ?
+                                            <table className="table table-fixed table-hover table-dark">
+                                                <thead>
+                                                    <tr>
+                                                    <th scope="col" style={{ backgroundColor:'#120124'}}>#</th>
+                                                    <th scope="col" style={{ backgroundColor:'#120124'}}>Price</th>
+                                                    <th scope="col" style={{ backgroundColor:'#120124'}}>From</th>
+                                                    <th scope="col" style={{ backgroundColor:'#120124'}}></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        offers.map((obj, index) => (
+                                                            <tr>
+                                                                <td style={{ backgroundColor:'#120124'}}><b>{index + 1}</b></td>
+                                                                <td style={{ backgroundColor:'#120124'}}><b>{obj.bidPrice / 10 ** 18} ETH</b></td>
+                                                                <td style={{ backgroundColor:'#120124'}}>{obj.bidder.slice(0,5)+".................."+obj.bidder.slice(37,42)}</td>
+                                                            </tr>
+                                                        )) 
+                                                    }  
+                                                </tbody>
                                             </table>
+                                            : <div className="text-center"><b>No Offer yet !!!</b></div>
+                                        }
                                         </div>
-                                    </div>   
+                                    </div>  
                                 </div>
                                 <div className="p-3 col-md-6">
                                     <div class="card">
@@ -273,10 +274,10 @@ function ViewDetails(){
                             <div className="modal-body">
                                 <div className="row">
                                     <div className="col-md mx-auto">
-                                        <form className="justify-content-center">
+                                        <form className="justify-content-center" onSubmit={placeBid}>
                                             <div className="form-group">
                                                 <label className="lottery-form-titles">Bid Price:</label>
-                                                <input type="number" className="input-text-lottery" placeholder="Enter Bid Price" step=".0000000001"/>
+                                                <input type="number" className="input-text-lottery" placeholder="Enter Bid Price" step=".0000000001" onChange={(e) => setBidPrice(e.target.value)}/>
                                             </div>
                                             
                                             <div className="form-group text-center">
@@ -290,9 +291,6 @@ function ViewDetails(){
                                     </div>
                                 </div>
                             </div>
-                            {/* <div className="modal-footer">
-                                <button type="button" className="btn custom-btn" onClick={(e) => generateArtWork(e)}>Generate ArtWork</button>
-                            </div> */}
                         </div>
                     </div>
                 </div>
