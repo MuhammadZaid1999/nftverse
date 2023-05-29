@@ -157,6 +157,8 @@ export function getOwnerNFTs(wallet){
     })
     return {owner_data, UUID};
 }
+
+
 export const addOrEdit1 = (UUID, obj, msg) => {
     firebaseDb.child(`users/${UUID}`).set(
         obj,
@@ -170,20 +172,6 @@ export const addOrEdit1 = (UUID, obj, msg) => {
         }
     )
 }
-
-
-export function getNFTs(){
-    let nfts = [];
-    firebaseDb.child('nfts').on('value', snapshot => {
-        if (snapshot.val() != null) {
-            let data = snapshot.val();
-            Object.keys(data).forEach((key) => {
-              nfts = data[key];   
-            })
-        }
-    })
-    return nfts;
-} 
 
 
 export const addOrEdit = (obj, msg) => {
@@ -200,6 +188,26 @@ export const addOrEdit = (obj, msg) => {
         }
     )
 }
+
+
+export function getNFTs(){
+    return new Promise((resolve, reject) => {
+        firebaseDb.child('nfts').on('value', snapshot => {
+            if (snapshot.val() != null) {
+                let nfts = [];
+                let data = snapshot.val();
+                nfts = data["-NV4hOCjMnVfFMMQc9TI"];
+                resolve(nfts);
+            }
+            else{
+                resolve([]);
+            }
+        }, error => {
+            reject(error);
+        }); 
+    });
+}
+
 
 export const addNFTInDB = (obj, msg) => {
     firebaseDb.child('nfts/-NV4hOCjMnVfFMMQc9TI').set(

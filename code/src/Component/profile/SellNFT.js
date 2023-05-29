@@ -36,7 +36,7 @@ function SellNFT(){
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        let nfts = getNFTs();
+        let nfts = await getNFTs();
         let objIndex = nfts.findIndex((obj => (obj.id === nft.id)));
         nfts[objIndex].saleType = 2;
         console.log(nfts);
@@ -80,7 +80,7 @@ function SellNFT(){
     const cancelListing = async (e) => {
         e.preventDefault();
 
-        let nfts = getNFTs();
+        let nfts = await getNFTs();
         let objIndex = nfts.findIndex((obj => (obj.id === nft.id)));
         nfts[objIndex].saleType = 1;
         console.log(nfts);

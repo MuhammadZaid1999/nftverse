@@ -16,38 +16,32 @@ function MarketPlace(){
     const [price, setPrice] = useState({min: 0, max: 0});
     const [name, setName] = useState("")
 
-    let data = getNFTs();
     useEffect(() => {
-        if(network === 5){
-            setNetwork("Ethereum (Goreli)");
-        }
-        else if(network === 80001){
-            setNetwork("Polygon (Matic)");
-        }
-        else if(network === 97){
-            setNetwork("Binance Smart Chain (Testnet)");
-        }
-        else{
-            setNetwork("");
-        }
-
-        const timer = setInterval(async ()=> {
-            data = getNFTs();
-            console.log(data);
-            if(data.length > 0){
-                clearInterval(timer);
+        (async() => {
+            if(network === 5){
+                setNetwork("Ethereum (Goreli)");
             }
+            else if(network === 80001){
+                setNetwork("Polygon (Matic)");
+            }
+            else if(network === 97){
+                setNetwork("Binance Smart Chain (Testnet)");
+            }
+            else{
+                setNetwork("");
+            }
+
+            let data = await getNFTs();
             data = data.filter(obj => (obj.network === network));
+            console.log(data);
             setNFTs(data);
-            console.log(data)
-        }, 1000)
-
-
+        })()
     },[network]);
 
 
-    const onSaleType = (saleType) => {
+    const onSaleType = async (saleType) => {
         setSaleType(saleType);
+        let data = await getNFTs();
         if(saleType != 0){
             data = data.filter(obj => (obj.saleType === saleType && obj.network === network));
             setNFTs(data);
@@ -68,6 +62,7 @@ function MarketPlace(){
             swal({text: "Max price must be greater than Min Price", icon: "error", className: "sweat-bg-color"});
         }
         
+        let data = await getNFTs();
         let arr= [];
         await Promise.all(data.map(async obj => {    
             let sellPrice = await contract.methods.viewListing(obj.id).call();
@@ -78,13 +73,13 @@ function MarketPlace(){
                 }
             }
         }));
-        data = arr;
-        setNFTs(data)
-        console.log(data)
+        setNFTs(arr)
+        console.log(arr)
     }
 
-    const searchOnName = (e) => {
+    const searchOnName = async (e) => {
         e.preventDefault();
+        let data = await getNFTs();
         data = data.filter(obj => (obj.name === name && obj.network === network));
         setNFTs(data);
     } 

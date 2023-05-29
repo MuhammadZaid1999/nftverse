@@ -123,9 +123,8 @@ function CreateNFT(){
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        let nfts = getNFTs();
-        console.log(nfts);
-
+        let nfts = await getNFTs();
+        
         let user_balance = await web3.eth.getBalance(accounts[0]);
         user_balance /= 10 ** 18;
      
@@ -156,6 +155,7 @@ function CreateNFT(){
                     addOrEdit(user_data, "NFT Created");
                     
                     nfts.push({id: nft_id ,name: data.name, image:`https://gateway.pinata.cloud/ipfs/${String(imageHash)}`, description: data.description, network: data.network ,attributes: data.attributes, saleType: 1})
+                    console.log("new nft added", nfts);
                     addNFTInDB(nfts, "NFT Added");
                     
                     const el = document.createElement('div');

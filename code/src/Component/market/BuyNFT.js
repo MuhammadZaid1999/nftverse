@@ -38,7 +38,7 @@ function ViewDetails(){
 
     const buyNFT = async(tokenId, price) => {
 
-        let nfts = getNFTs();
+        let nfts = await getNFTs();
         let objIndex = nfts.findIndex((obj => (obj.id === tokenId)));
         nfts[objIndex].saleType = 0;
         console.log("NFTs Updated List", nfts);
