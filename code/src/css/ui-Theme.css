@@ -82,10 +82,42 @@
 /* .icon-button{
     padding-left: 2%;
 } */
+@media screen and (max-width: 2131px){
+    .my-assets-field{
+        margin: 5%;
+        padding: 30% 1% 10% 5%;
+        background-repeat: round !important;
+    }
+    .my-assets-images{
+        width: 90% !important; 
+        margin-left: 5%;
+        /* height: 90%; */  
+    }
+    
+    .my-assets-Title{
+        height: 60px;
+        width: 90% !important;
+        /* color: white; */
+        font-weight: 600;
+        /* background-color: white; */
+        padding-top: 2%;
+    
+    }
+}
+/* @media screen and (max-width: 1430px){
+    .my-assets-field{
+        margin: 3%;
+        padding: 44% 1% 10% 5%;
+        background-repeat: round !important;
+    }
+} */
 @media screen and (max-width: 1200px){
     .add-layer{
         top: 14px !important;
         left: 150px !important
+}
+.expand-btn .btn .nav-link{
+    padding: 0 !important;
 }
 }
 @media screen and (max-width: 1130px){
@@ -115,15 +147,65 @@
     .staking-head {
         margin-top: 15% !important;
     }
+    .intro-button button{
+        font-weight: normal !important;
+    }
+
+
 }
 @media screen and (max-width: 686px){
     .staking-head {
         margin-top: 25% !important;
     }
+    .nftContainer .row .col-md-4 , .nftContainer .row .col-md-12{
+        padding: 0 2%;
+    }
+    .expand-btn .btn{
+        font-size: 12px !important;
+        padding: 3% 3% !important;
+    }
 }
 
+@media screen and (max-width: 577px){
+    .my-assets-field {
+        margin: 5%;
+        padding: 22% 1% 20% 3% !important;
+        background-repeat: no-repeat !important;
+    }
+    .my-assets-images {
+        width: 60% !important;
+    }
+    .my-assets-Title {
+        height: 60px;
+        width: 60% !important;
+        font-weight: 600;
+        /* background-color: white; */
+        padding-top: 2%;
+    }
+}
 
+@media screen and (max-width: 475px){
 
+    .my-assets-images {
+        width: 75% !important;
+    }
+    .my-assets-Title {
+        height: 60px;
+        width: 60% !important;
+        font-weight: 600;
+        /* background-color: white; */
+        padding-top: 2%;
+    }
+}
+
+@media screen and (max-width: 381px){
+    .my-assets-images {
+        width: 90% !important;
+    }
+    .my-assets-field {
+        padding: 22% 1% 20% 3% !important;
+    }
+}
 
 
 /* Collection Page */
@@ -269,22 +351,21 @@
     /* border-image: url("../images/Group20.png") 12 stretch; */
     /* padding: 5px;  */
     margin: 5%;
-    padding: 30% 1% 10% 5%;
+    padding: 25% 2% 10% 3%;
     background-image: url("../images/Group20.png");
     background-repeat: no-repeat;
-    height: 100%;
+    height: auto;
 }
 
 .my-assets-images{
-    width: 90%;
+    width: 60%;
     margin-left: 5%;
-    /* height: 90%; */
-  
+    /* height: 90%; */  
 }
 
 .my-assets-Title{
     height: 60px;
-    width: 90%;
+    width: 60%;
     /* color: white; */
     font-weight: 600;
     /* background-color: white; */

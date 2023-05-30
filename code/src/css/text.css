@@ -9,6 +9,10 @@
   margin-top: 3% ;
 }
 
+.mt-2{
+  margin-top: 2% ;
+}
+
 .mt-15{
   margin-top: 10%;
 }
@@ -122,7 +126,6 @@ nav{
     
 }
 .intro-button button{
-
   font-weight: 600;
   color: white;
   background: rgb(218,20,205);

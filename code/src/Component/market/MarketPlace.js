@@ -172,7 +172,7 @@ function MarketPlace(){
                                         {
                                             nfts.length > 0 ?
                                             nfts.map(obj => (
-                                                    <div className="col-sm-3">
+                                                    <div className="col-sm-3 mt-2">
                                                         <div className="my-assets-field">
                                                             <img className="my-assets-images" src={obj.image} alt ="" style={{marginLeft: "0%"}}/>
                                                             <div className="my-assets-Title">

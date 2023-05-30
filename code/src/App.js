@@ -1,5 +1,5 @@
 import './App.css';
-import Main from './component/navbar/Main';
+import Main from './Component/navbar/Main.js';
 import { GlobalProvider } from './context/GlobalState';
 
 

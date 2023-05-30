@@ -54,12 +54,12 @@ function MyProfile() {
                                     {
                                         user_nfts.length > 0 ?
                                         user_nfts.map(data => (
-                                            <div className="col-sm-3">
+                                            <div className="col-sm-3 mt-2">
                                                 <div className="my-assets-field row mt-5">
                                                     <img className="my-assets-images row" src={data.image} alt ="" style={{width:"280px"}}/>
                                                     <div className="row pt-2 pl-2">
                                                         <div className="my-assets-Title col-sm"><span>{data.name}</span></div>
-                                                        <div className="intro-button col-sm"><button className="btn btn-sm"><a className="nav-link" href={`/ViewProfileDetails?details=${JSON.stringify(data)}&wallet=${user_data.wallet_address}`}>Expand Item</a></button></div>
+                                                        <div className="intro-button col-sm expand-btn"><button className="btn btn-sm"><a className="nav-link" href={`/ViewProfileDetails?details=${JSON.stringify(data)}&wallet=${user_data.wallet_address}`}>Expand Item</a></button></div>
                                                     </div>
                                                 </div>
                                             </div>
