@@ -1,8 +1,7 @@
-
-// import NavbarBeforeLogin from "./BeforeLogin";
 import firebaseDb from "../../firebase/config";
 import Web3 from "web3";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { generateSecuriyCode } from "../../store/asyncActions";
 import swal from 'sweetalert';
 
 
@@ -17,6 +16,23 @@ function Register() {
         nfts:[{id:'',name:'',image:'', description:'', network: '', attributes:[]}]
     }
     const [values, setValues] = useState(initialFieldValues);
+
+    const securityCode = {
+        code: '',
+        confirmCode: '',
+    }
+    const [security, setSecurity] = useState(securityCode);
+
+
+    function disableCopy(event) {
+        event.preventDefault();
+    }
+
+    useEffect(() => {
+        let security_code = generateSecuriyCode();
+        setSecurity({...security, code: security_code});
+    },[])
+
 
     const addOrEdit = async (obj) => {   
         firebaseDb.child('users').push(
@@ -44,8 +60,14 @@ function Register() {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(values)
-        if(values.password !== values.confirm_password){
+        if(values.wallet_address === ""){
+            swal({text: "Connect Your Wallet", icon: "warning"});
+        }
+        else if(values.password !== values.confirm_password){
             swal({text: "Password and Confirm Password does not matched", icon: "error"});
+        }
+        else if(security.code !== security.confirmCode){
+            swal({text: "Incorrect Security Code", icon: "error", className: "sweat-bg-color"});
         }
         else{
             addOrEdit(values);
@@ -93,7 +115,17 @@ function Register() {
                                                 <label className="field-title">Confirm Password</label>
                                                 <input type="password" className="input-register" placeholder="Enter Confirm Password" onChange={(e)=> setValues({...values, confirm_password: e.target.value })} required/>
                                             </div>
-
+                                            <div className="form-group">
+                                                <div className="row">
+                                                    <label className="field-title">Security Code</label>
+                                                    <div className="col-md-5" style={{marginRight:"8%"}}>
+                                                    <input type="text" className="input-register" value={security.code} style={{fontFamily: "'Shadows Into Light', cursive", cursor: "not-allowed"}} readOnly onCopy={(e) => disableCopy(e)}/>
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                    <input type="text" className="input-register" placeholder="Enter Security Code" onChange={(e)=> setSecurity({...security, confirmCode: e.target.value })} required/>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <div className="form-group text-center">
                                                 <br/>
                                                 <div className="intro-button">
