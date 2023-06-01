@@ -79,6 +79,10 @@
     margin-left: 3%;
 }
 
+.my-assets-Title .intro-button .btn .nav-link:hover{
+    color: white;
+}
+
 /* .icon-button{
     padding-left: 2%;
 } */
@@ -125,12 +129,16 @@
         top: 13px !important;
         left: 130px !important
 }
+.my-assets-Title .intro-button .btn .nav-link{
+    padding: 0 !important;
+}
 }
 @media screen and (max-width: 1171px){
     .add-layer{
         top: 14px !important;
         left: 145px !important
 }
+
 }
 @media screen and (max-width: 900px){
     .nftverse_concept{
@@ -150,6 +158,8 @@
     .intro-button button{
         font-weight: normal !important;
     }
+
+
 
 
 }
