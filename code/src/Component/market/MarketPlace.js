@@ -161,13 +161,13 @@ function MarketPlace(){
                                                         </div>
                                                         <div className="col-md-2">
                                                             <div className="intro-button">
-                                                               <button type="submit" className="btn btn-primary mb-2" style={{width:"85%"}}>Search</button>
+                                                                <button type="submit" className="btn btn-primary mb-2" style={{width:"85%"}}>Search</button>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </form>
                                             </div>
-                                       </div>
+                                        </div>
                                     <div className="row">
                                         {
                                             nfts.length > 0 ?

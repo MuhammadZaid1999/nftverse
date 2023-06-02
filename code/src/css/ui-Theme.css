@@ -1,3 +1,10 @@
+.navbar-brand{
+    margin-top: -0.5%;
+    margin-left: 5%; 
+}
+.bg-nav{
+    background-color: #000000a1;
+}
 
 .section-one{
     color: white;
@@ -30,12 +37,13 @@
     position: relative;
 }
 .nav-section {
+    width: 100%;
     height: 80px;
     z-index: 2;
     position: fixed;
     background-color: rgba(0,0,0,0.26);
     color: white;
-    font-weight: bold;
+    font-weight: bold; 
     /* filter: blur(2px); */
 }
 .nav-section-blur{
@@ -80,7 +88,7 @@
 }
 
 .my-assets-Title .intro-button .btn .nav-link:hover{
-    color: white;
+    color: white !important;
 }
 
 /* .icon-button{
@@ -93,8 +101,13 @@
         background-repeat: round !important;
     }
     .my-assets-images{
-        width: 90% !important; 
+        width: 97% !important; 
         margin-left: 5%;
+        /* height: 90%; */  
+    }
+    .buy-assets-images{
+        width: 97% !important; 
+        /* margin-left: 5%; */
         /* height: 90%; */  
     }
     
@@ -107,7 +120,7 @@
         padding-top: 2%;
     
     }
-}
+}   
 /* @media screen and (max-width: 1430px){
     .my-assets-field{
         margin: 3%;
@@ -122,6 +135,9 @@
 }
 .expand-btn .btn .nav-link{
     padding: 0 !important;
+}
+.user-name{
+    margin-top: 0 !important;
 }
 }
 @media screen and (max-width: 1130px){
@@ -140,6 +156,15 @@
 }
 
 }
+
+@media screen and (max-width: 993px){
+    .navbar-brand{
+        margin-left: 0 !important;
+    }
+    
+}
+
+
 @media screen and (max-width: 900px){
     .nftverse_concept{
         background-image:none;
@@ -158,8 +183,12 @@
     .intro-button button{
         font-weight: normal !important;
     }
-
-
+    .user-name{
+        margin-top: 3% !important;
+    }
+    .expand-btn .btn{
+        padding: 0 !important; 
+    }
 
 
 }
@@ -174,6 +203,10 @@
         font-size: 12px !important;
         padding: 3% 3% !important;
     }
+    .user-name{
+        margin-top: 5% !important;
+    }
+
 }
 
 @media screen and (max-width: 577px){
@@ -205,6 +238,9 @@
         font-weight: 600;
         /* background-color: white; */
         padding-top: 2%;
+    }
+    .user-name{
+        margin-top: 8% !important;
     }
 }
 
@@ -372,6 +408,11 @@
     margin-left: 5%;
     /* height: 90%; */  
 }
+.buy-assets-images{
+    width: 60%;
+    /* margin-left: 5%; */
+    /* height: 90%; */  
+}
 
 .my-assets-Title{
     height: 60px;
@@ -383,6 +424,30 @@
 
 }
 
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #720086;	
+	background-image: -webkit-linear-gradient(45deg,
+                                    rgba(255, 255, 255, .2) 25%,
+                                    transparent 25%,
+                                    transparent 50%,
+                                    rgba(255, 255, 255, .2) 50%,
+                                    rgba(255, 255, 255, .2) 75%,
+                                    transparent 75%,
+                                    transparent)
+}
 
 
 
