@@ -5,7 +5,13 @@
 .bg-nav{
     background-color: #000000a1;
 }
-
+.dropdown-menu{
+    background-color: #0000;
+}
+.dropdown-item {
+    color: #fff !important;
+    text-decoration: none;
+}
 .section-one{
     color: white;
     width: 100%;
@@ -168,7 +174,10 @@
         width: 40% !important;
         height: 75% !important;
     }
-    
+    .dropdown-item:focus, .dropdown-item:hover {
+        color: #1e2125;
+        background-color: #636566 !important;
+    }
 }
 @media screen and (max-width: 992px){
     .nftverse_concept_img{
