@@ -101,7 +101,7 @@
         background-repeat: round !important;
     }
     .my-assets-images{
-        width: 97% !important; 
+        width: 90% !important; 
         margin-left: 5%;
         /* height: 90%; */  
     }
@@ -120,25 +120,28 @@
         padding-top: 2%;
     
     }
-}   
-/* @media screen and (max-width: 1430px){
-    .my-assets-field{
-        margin: 3%;
-        padding: 44% 1% 10% 5%;
-        background-repeat: round !important;
+    .add-assest-file {
+        /* margin-right: 0.5%; */
+        padding: 0 !important;
     }
-} */
+}   
+@media screen and (max-width: 1400px){
+    .logo-image {
+        width: 25% !important;
+        height: 75% !important;
+    }
+}
 @media screen and (max-width: 1200px){
     .add-layer{
         top: 14px !important;
         left: 150px !important
-}
-.expand-btn .btn .nav-link{
-    padding: 0 !important;
-}
-.user-name{
-    margin-top: 0 !important;
-}
+    }
+    .expand-btn .btn .nav-link{
+        padding: 0 !important;
+    }
+    .user-name{
+        margin-top: 0 !important;
+    }
 }
 @media screen and (max-width: 1130px){
     .add-layer{
@@ -161,9 +164,22 @@
     .navbar-brand{
         margin-left: 0 !important;
     }
+    .logo-image {
+        width: 40% !important;
+        height: 75% !important;
+    }
     
 }
-
+@media screen and (max-width: 992px){
+    .nftverse_concept_img{
+        opacity: 0.15;
+    }
+    .add-layer {
+        top: 14px !important;
+        left: 115px !important;
+    }
+    
+}
 
 @media screen and (max-width: 900px){
     .nftverse_concept{
@@ -189,9 +205,19 @@
     .expand-btn .btn{
         padding: 0 !important; 
     }
+    .logo-image-field {
+        margin: 5% 0 !important;
+    }
 
 
 }
+@media screen and (max-width: 768px){
+    .logo-image {
+        width: 55% !important;
+        height: 75% !important;
+    }
+}
+
 @media screen and (max-width: 686px){
     .staking-head {
         margin-top: 25% !important;
@@ -205,6 +231,21 @@
     }
     .user-name{
         margin-top: 5% !important;
+    }
+    .files-container{
+        width: 100%;
+    }
+    .add-layer {
+        top: 20px !important;
+        left: 375px !important;
+    }
+    .add-assest-file {
+        margin-right: 0.5%;
+        padding: 0 !important;
+    }
+    .file-detail{
+        width: 100%;
+        padding: 0 2%;
     }
 
 }
@@ -225,12 +266,21 @@
         /* background-color: white; */
         padding-top: 2%;
     }
+    .add-layer {
+        top: 17px !important;
+        left: 310px !important;
+    }
+
 }
 
 @media screen and (max-width: 475px){
 
     .my-assets-images {
         width: 75% !important;
+    }
+    .descrpition-assets-images{
+        width: 75%;
+    
     }
     .my-assets-Title {
         height: 60px;
@@ -242,14 +292,46 @@
     .user-name{
         margin-top: 8% !important;
     }
+    .add-layer {
+        top: 17px !important;
+        left: 275px !important;
+    }
+}
+@media screen and (max-width: 430px){
+    .add-layer {
+        top: 16px !important;
+        left: 260px !important;
+    }
+}
+@media screen and (max-width: 400px){
+    .add-layer {
+        top: 16px !important;
+        left: 235px !important;
+    }
 }
 
 @media screen and (max-width: 381px){
     .my-assets-images {
         width: 90% !important;
     }
+    .descrpition-assets-images{
+        width: 90%;
+    
+    }
     .my-assets-field {
         padding: 22% 1% 20% 3% !important;
+    }
+    .add-layer {
+        top: 16px !important;
+        left: 235px !important;
+    }
+}
+
+@media screen and (max-width: 355px){
+
+    .add-layer {
+        top: 16px !important;
+        left: 202px !important;
     }
 }
 
@@ -407,6 +489,10 @@
     width: 60%;
     margin-left: 5%;
     /* height: 90%; */  
+}
+.descrpition-assets-images{
+    width: 90%;
+
 }
 .buy-assets-images{
     width: 60%;

@@ -102,7 +102,7 @@ function NftGenerator(){
                             { 
                                 layers.map((layer, key) => (
                                     key === layerIndex ? 
-                                    <div className="col-sm-9">
+                                    <div className="col-sm-9 file-detail">
                                         <div className="row">
                                             <div className="col-sm"><p className="nftGenerator-background-p">{layer}</p></div>
                                             {/* <div className="col-sm"><button  className="nftGenerator-button">Manage</button></div> */}

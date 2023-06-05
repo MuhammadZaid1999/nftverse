@@ -126,7 +126,7 @@ function SellNFT(){
                         <div className="container"> 
                             <div className="row">
                                 <div className="p-3 col-md-6">
-                                    <img className="my-assets-images" src={nft.image} alt=""/>
+                                    <img className="descrpition-assets-images" src={nft.image} alt=""/>
                                 </div>
                                 <div className="p-3 col-md-6">
                                     <a style={{color: "rgb(218,20,205)"}}>NFTVERSE</a>

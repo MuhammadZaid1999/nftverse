@@ -1,4 +1,4 @@
-import logo from '../../images/logo_new.png';
+import logo from '../../images/Group41.png';
 import Home from '../main/Home';
 import Login from '../main/Login';
 import Register from '../main/Register';
