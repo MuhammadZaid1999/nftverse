@@ -104,15 +104,17 @@ function Register() {
                                         <div className="col-md-5 mx-auto">
                                         <form className="justify-content-center" onSubmit={e => handleSubmit(e)}>
                                             <div className="form-group">
-                                                <div className="col-md-10">
-                                                    <label className="field-title">Wallet Address</label>
-                                                    <input type="text" className="input-register" placeholder="0x0000000000000000000000000000000000000" value={values.wallet_address} readOnly required/>
-                                                </div>
-                                                    <div className="col-md-2" style={{margin:"-10.5% 0% 4% 85%"}}>
+                                                <div className="row">
+                                                    <div className="col-sm-10">
+                                                        <label className="field-title">Wallet Address</label>
+                                                        <input type="text" className="input-register" placeholder="0x0000000000000000000000000000000000000" value={values.wallet_address} readOnly required/>
+                                                    </div>
+                                                    <div className="col-sm-2 register-connect-btn">
                                                         <div className="intro-button">
                                                             <button type="button" className="btn btn-primary" onClick={()=> connectWallet()}>Connect</button>
                                                         </div>
                                                     </div>
+                                                </div>
                                             </div>
                                             <div className="form-group">
                                                 <label className="field-title">UserName</label>
