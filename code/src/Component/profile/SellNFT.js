@@ -204,7 +204,11 @@ function SellNFT(){
     }
 
     let counter = 0;
-
+    async function copyText(){
+        navigator.clipboard.writeText(owner);
+        document.getElementById("text-visible").style.visibility = "visible";
+        console.log("Copied owner Address: " + owner);
+    }
     return(
         // <div className="Theme_ui">
             <div className="Create-Collection-section row">
@@ -220,8 +224,8 @@ function SellNFT(){
                                 <div className="p-3 col-md-6">
                                     <a style={{color: "rgb(218,20,205)"}}>NFTVERSE</a>
                                     <h2>{nft.name}</h2>
-                                    <span>Owned by</span><span style={{color: "rgb(218,20,205)"}}> {owner.slice(0,5)}...........{owner.slice(37,42)} <br/><br/></span>
-                                    <div class="card">
+                                    <span>Owned by</span><span style={{color: "rgb(218,20,205)", cursor:"pointer"}} onClick={() => copyText()}> {owner.slice(0,5)}...........{owner.slice(37,42)}  <span id='text-visible' className='textCopied'>Owner Address Copied</span>  <br/><br/></span>
+                                    <div className="card">
                                         <div className="card-body" style={{backgroundColor:'#120124'}}>
                                             <h6 className="card-subtitle mb-2 text-muted">Current Price</h6>
                                             <h3 className="card-title"><b>{currentPrice / 10**18} ETH</b></h3>
@@ -235,8 +239,8 @@ function SellNFT(){
                                         </div>
                                     </div>   
                                      <br/><br/>
-                                    <div class="card">
-                                        <div class="card-header" style={{border:'1px solid white', backgroundColor:'#120124'}}>
+                                    <div className="card">
+                                        <div className="card-header" style={{border:'1px solid white', backgroundColor:'#120124'}}>
                                             <b>Offers</b>
                                         </div>
                                         <div className="card-body" style={{ backgroundColor:'#120124', height:'165px', overflowY:'scroll', scrollbarColor: 'red yellow'}}>
@@ -276,7 +280,7 @@ function SellNFT(){
                                     </div>   
                                 </div>
                                 <div className="p-3 col-md-6">
-                                    <div class="card">
+                                    <div className="card">
                                         <div className="card-header" style={{border:'1px solid white', backgroundColor:'#120124'}}>
                                            <b>Description</b>
                                         </div>
@@ -285,7 +289,7 @@ function SellNFT(){
                                         </div>
                                     </div> 
                                     <br/>  
-                                    <div class="card">
+                                    <div className="card">
                                         <div className="card-header" style={{border:'1px solid white', backgroundColor:'#120124'}}>
                                            <b>Attributes</b>
                                         </div>
@@ -307,7 +311,7 @@ function SellNFT(){
                                     </div>    
                                 </div>
                                 <div className="p-3 col-md-6">
-                                    <div class="card">
+                                    <div className="card">
                                         <div className="card-header" style={{border:'1px solid white', backgroundColor:'#120124'}}>
                                            <b>Details</b>
                                         </div>
@@ -349,12 +353,12 @@ function SellNFT(){
                 </div>
 
 
-                <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">Sell NFT</h5>
-                                <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" className="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div className="modal-body">
                                 <div className="row">
