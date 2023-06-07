@@ -78,7 +78,7 @@ function Login() {
                             <h1 className="Create-collection-head">Login Account</h1>
                         </div>
                         <div className="row">
-                            <div className="col-md-5 mx-auto">
+                            <div className="col-md-5 mx-auto login-form">
                                 <form className="justify-content-center" onSubmit={(e) => handleSubmit(e)}>
                                     <div className="form-group">
                                         <label className="field-title">UserName</label>
@@ -87,14 +87,19 @@ function Login() {
                                     <div className="form-group">
                                         <label className="field-title">Password</label>
                                         <div className="row">
-                                            <div className="col-md-11">
-                                                <input type={passwordVisible ? 'text' : 'password'} className="input-register" placeholder="Enter Password" onChange={(e) => setValues({ ...values, password: e.target.value })} required />
+                                            <div className="row field-password">
+                                                <div className="col-sm-11 w-90">
+                                                <input type={passwordVisible ? 'text' : 'password'} className="input-password" placeholder="Enter Password" onChange={(e) => setValues({ ...values, password: e.target.value })} required />
+                                                </div>
+                                                <div className="col-sm-1 w-10">
+                                                    <button className="btn btn-outline-secondary" type="button" onClick={togglePasswordVisibility}> 
+                                                        <i className={ passwordVisible ? "fa-sharp fa-regular fa-eye-slash" : "fa-sharp fa-regular fa-eye"}></i>
+                                                    </button>
+                                                </div>
                                             </div> 
-                                            <div className="col-md-1">
-                                                <button className="btn btn-outline-secondary" type="button" onClick={togglePasswordVisibility}> 
-                                                    <i className={ passwordVisible ? "fa-sharp fa-regular fa-eye-slash" : "fa-sharp fa-regular fa-eye"}></i>
-                                                </button>
-                                            </div>
+                                            {/* <div className="col-md-1 eye-icon">
+                                                
+                                            </div> */}
                                         </div>
                                     </div>
                                     <div className="form-group">

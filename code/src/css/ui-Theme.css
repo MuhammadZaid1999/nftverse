@@ -5,7 +5,20 @@
 .navbar-toggler{
     margin-right: 1%;
 }
+.navbar-collapse {
+    background-color: #000000cf;
+}
 
+.eye-icon{
+    margin-top: 1%;
+   
+}
+.btn-outline-secondary{
+    border-color: #00000000 !important;
+}
+input{
+    border-radius: 5px !important;
+}
 .bg-nav{
     background-color: #000000a1;
 }
