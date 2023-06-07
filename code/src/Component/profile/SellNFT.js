@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
 import { useStore } from "../../context/GlobalState";
 import { NFTVERSE_POLYGON_ADDRESS, NFTVERSE_BSC_ADDRESS, NFTVERSE_ETHEREUM_ADDRESS } from "../../contract/NFTVERSE";
-import { ListNFT, CancelListing, addNFTInDB, getNFTs } from "../../store/asyncActions";
+import { ListNFT, CancelListing, AcceptOffer, addNFTInDB, addOrEdit, addOrEdit1, getNFTs, getOwnerNFTs } from "../../store/asyncActions";
 import swal from 'sweetalert';
 
 function SellNFT(){
     const params = new URLSearchParams(window.location.search);
     const nft = JSON.parse(params.get("details"));
-    const wallet = params.get("wallet");
 
-    const [{web3, contract, accounts, user_data}] = useStore();
+    const [{web3, contract, accounts, user_data, network}] = useStore();
     const [sellPrice, setSellPrice] = useState(0);
+    const [owner, setOwner] = useState("");
 
     const [listed, setListed] = useState(false);
     const [currentPrice, setCurrentPrice] = useState(0); 
 
     const[offers, setOffers] = useState([]);
+
+    const[_acceptOffer, _setAcceptOffer] = useState(false);
 
     useEffect(() => {
         (async() => {
@@ -26,11 +28,14 @@ function SellNFT(){
                     setListed(true);
                 }
 
+                const owner = await contract.methods.ownerOf(nft.id).call();
+                setOwner(owner);
+
                 const _offers = await contract.methods.getOffers(nft.id).call();
                 setOffers(_offers);
             }
         })()
-    },[contract, listed])
+    },[contract, listed, _acceptOffer])
 
 
     const handleSubmit = async (e) => {
@@ -68,7 +73,17 @@ function SellNFT(){
                     addNFTInDB(nfts, "NFT Updated");
 
                     setListed(true);
-                    swal({text: "NFT Listed Successfully", icon: "success", className: "sweat-bg-color"});
+                    const el = document.createElement('div');
+                    if(network === 5){
+                        el.innerHTML = `Transaction Link: <a href='https://goerli.etherscan.io/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 97){
+                        el.innerHTML = `Transaction Link: <a href='https://testnet.bscscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 80001){
+                        el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    swal({text: "NFT Listed Successfully", icon: "success", content: el ,className: "sweat-bg-color"});
                 }
             }catch (error){
                 console.log("error trax = ",error); 
@@ -107,7 +122,17 @@ function SellNFT(){
                     addNFTInDB(nfts, "NFT Updated");
 
                     setListed(false);
-                    swal({text: "NFT Listing cancel Successfully", icon: "success", className: "sweat-bg-color"});
+                    const el = document.createElement('div');
+                    if(network === 5){
+                        el.innerHTML = `Transaction Link: <a href='https://goerli.etherscan.io/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 97){
+                        el.innerHTML = `Transaction Link: <a href='https://testnet.bscscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 80001){
+                        el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    swal({text: "NFT Listing cancel Successfully", icon: "success", content: el ,className: "sweat-bg-color"});
                 }
             }catch (error){
                 console.log("error trax = ",error); 
@@ -115,6 +140,70 @@ function SellNFT(){
             }
         } 
     }
+
+    const acceptOffer = async (tokenId, index, bidder_address) => {
+
+        let nfts = await getNFTs();
+        let objIndex = nfts.findIndex((obj => (obj.id === tokenId)));
+        nfts[objIndex].saleType = 0;
+        console.log("NFTs Updated List", nfts);
+
+        let {owner_data, UUID} = getOwnerNFTs(bidder_address);
+        let bidder_data = owner_data;
+
+        const owner = await contract.methods.ownerOf(tokenId).call();
+
+        if(user_data.wallet_address !== accounts[0]){
+            swal({text: "Please Connect with correct Wallet", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(owner !== accounts[0]){
+            swal({text: "Only Owner can accept Offer", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(bidder_address === accounts[0]){
+            swal({text: "Bidder address cannot accept Offer", icon: "warning", className: "sweat-bg-color"});
+        }
+        else{
+            try {  
+                const newTransaction = {
+                    tokenID: tokenId,
+                    index: index
+                }
+                console.log("newtrx", newTransaction)
+                const transaction = await AcceptOffer(contract, accounts, newTransaction);
+                if(transaction.status == true){
+
+                    let _index = user_data.nfts.findIndex((obj => (obj.id === tokenId)));
+                    user_data.nfts.splice(_index, 1);
+                    console.log("delete nft from owner", user_data.nfts);
+                    addOrEdit(user_data, "NFT Deleted");
+
+                    bidder_data.nfts.push({id: tokenId ,name: nft.name, image: nft.image, description: nft.description, network: nft.network ,attributes: nft.attributes});
+                    console.log("added nft on bidder", bidder_data.nfts);
+                    addOrEdit1(UUID, bidder_data, "NFT Added");
+
+                    addNFTInDB(nfts, "NFT List Updated");
+
+                    _setAcceptOffer(true);
+                    const el = document.createElement('div');
+                    if(network === 5){
+                        el.innerHTML = `Transaction Link: <a href='https://goerli.etherscan.io/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 97){
+                        el.innerHTML = `Transaction Link: <a href='https://testnet.bscscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 80001){
+                        el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    swal({text: "Offer Accepted Successfully", icon: "success", content: el ,className: "sweat-bg-color"});
+                }
+            }catch (error){
+                console.log("error trax = ",error); 
+                swal({text: error.message, icon: "error", className: "sweat-bg-color"});
+            }
+        }
+    }
+
+    let counter = 0;
 
     return(
         // <div className="Theme_ui">
@@ -131,7 +220,7 @@ function SellNFT(){
                                 <div className="p-3 col-md-6">
                                     <a style={{color: "rgb(218,20,205)"}}>NFTVERSE</a>
                                     <h2>{nft.name}</h2>
-                                    <span>Owned by</span><span style={{color: "rgb(218,20,205)"}}> {wallet.slice(0,5)}...........{wallet.slice(37,42)} <br/><br/></span>
+                                    <span>Owned by</span><span style={{color: "rgb(218,20,205)"}}> {owner.slice(0,5)}...........{owner.slice(37,42)} <br/><br/></span>
                                     <div class="card">
                                         <div className="card-body" style={{backgroundColor:'#120124'}}>
                                             <h6 className="card-subtitle mb-2 text-muted">Current Price</h6>
@@ -165,16 +254,18 @@ function SellNFT(){
                                                 <tbody>
                                                     {
                                                         offers.map((obj, index) => (
+                                                            obj.bidder !== "0x0000000000000000000000000000000000000000" ?
                                                             <tr>
-                                                                <td style={{ backgroundColor:'#120124'}}><b>{index + 1}</b></td>
-                                                                <td style={{ backgroundColor:'#120124'}}><b>{obj.bidPrice / 10 ** 18} ETH</b></td>
+                                                                <td style={{ backgroundColor:'#120124'}}><b>{++counter}</b></td>
+                                                                <td style={{ backgroundColor:'#120124'}}><b>{obj.bidPrice / (10 ** 18)} ETH</b></td>
                                                                 <td style={{ backgroundColor:'#120124'}}>{obj.bidder.slice(0,5)+".................."+obj.bidder.slice(37,42)}</td>
                                                                 <td style={{ backgroundColor:'#120124'}}>
                                                                     <div className="intro-button">
-                                                                        <button type="submit" className="btn btn-primary">Accept</button>
+                                                                        <button type="submit" className="btn btn-primary" onClick={()=>acceptOffer(nft.id, index, obj.bidder)}>Accept</button>
                                                                     </div>
                                                                 </td>
                                                             </tr>
+                                                            : null
                                                         )) 
                                                     }  
                                                 </tbody>
