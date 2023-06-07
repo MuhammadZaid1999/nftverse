@@ -129,7 +129,7 @@ contract NFTVERSE is ERC721URIStorage{
         payable(nft_details.creator).transfer(percentage);
 
         _transfer(msg.sender, _offers[index].bidder, tokenId);
-        nftsDetails[tokenId] = NFT_DETAILS(nft_details.creator, payable(_offers[index].bidder), _offers[index].bidder, _offers[index].bidPrice, false);
+        nftsDetails[tokenId] = NFT_DETAILS(nft_details.creator, payable(_offers[index].bidder), _offers[index].bidder, 0, false);
         
         delete offers[tokenId][index];
 
