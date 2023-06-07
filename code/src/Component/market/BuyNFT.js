@@ -194,7 +194,12 @@ function ViewDetails(){
         }
     }
     let counter = 0;
-    
+    async function copyText(){
+        navigator.clipboard.writeText(owner);
+        document.getElementById("text-visible").style.visibility = "visible";
+        console.log("Copied owner Address: " + owner);
+
+    }
     return(
         // <div className="Theme_ui">
             <div className="Create-Collection-section row">
@@ -210,7 +215,7 @@ function ViewDetails(){
                                 <div className="p-3 col-md-6">
                                     <a style={{color: "rgb(218,20,205)"}}>NFTVERSE</a>
                                     <h2>{nft.name}</h2>
-                                    <span>Owned by</span><span style={{color: "rgb(218,20,205)"}}> {owner.slice(0,5)}...........{owner.slice(37,42)} <br/><br/></span>
+                                    <span>Owned by</span><span style={{color: "rgb(218,20,205)", cursor:"pointer"}} onClick={() => copyText()}> {owner.slice(0,5)}...........{owner.slice(37,42)} <span id='text-visible' className='textCopied'>Owner Address Copied</span> <br/><br/></span>
                                     <div class="card">
                                         <div className="card-body" style={{backgroundColor:'#120124'}}>
                                             <h6 className="card-subtitle mb-2 text-muted">Current Price</h6>
