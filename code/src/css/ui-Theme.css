@@ -273,7 +273,9 @@ input{
         width: 100%;
         padding: 0 2%;
     }
-
+    .Registration-Container{
+        margin-top: 15% !important;
+    }
 }
 
 @media screen and (max-width: 577px){
@@ -296,7 +298,9 @@ input{
         top: 17px !important;
         left: 310px !important;
     }
-
+    .Registration-Container{
+        margin-top: 25% !important;
+    }
 }
 
 @media screen and (max-width: 475px){
@@ -430,7 +434,10 @@ input{
 .Create-Collection-Container{
     color: white;
     margin-top: 10%;
-
+}
+.Registration-Container{
+    color: white;
+    margin-top: 10%;
 }
 
 .Create-Collection-Title{

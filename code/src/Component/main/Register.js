@@ -95,7 +95,7 @@ function Register() {
                 <div className="collection-section-background row">
                     {/* <div className="nav-section-blur row"></div> */}
                     {/* <NavbarBeforeLogin/> */}
-                    <div className="Create-Collection-Container">
+                    <div className="Registration-Container">
                             <div className="container">
                                 <div className="Create-Collection-Title row text-center"> 
                                     <h1 className="Create-collection-head">Register Account</h1> 
@@ -124,11 +124,11 @@ function Register() {
                                             </div>
                                             <div className="form-group">
                                                 <label className="field-title">Password</label>
-                                                <div className="row">
-                                                    <div className="col-md-11">
-                                                        <input type={passwordVisible.password ? 'text' : 'password'} className="input-register" placeholder="Enter Password" onChange={(e)=> setValues({...values, password: e.target.value })} required/>
+                                                <div className="row field-password">
+                                                    <div className="col-sm-11 w-90">
+                                                        <input type={passwordVisible.password ? 'text' : 'password'} className="input-password" placeholder="Enter Password" onChange={(e)=> setValues({...values, password: e.target.value })} required/>
                                                     </div>
-                                                    <div className="col-md-1">
+                                                    <div className="col-sm-1 w-10">
                                                         <button className="btn btn-outline-secondary" type="button" onClick={()=>togglePasswordVisibility(0)}> 
                                                             <i className={ passwordVisible.password ? "fa-sharp fa-regular fa-eye-slash" : "fa-sharp fa-regular fa-eye"}></i>
                                                         </button>
@@ -137,11 +137,11 @@ function Register() {
                                             </div>
                                             <div className="form-group">
                                                 <label className="field-title">Confirm Password</label>
-                                                <div className="row">
-                                                    <div className="col-md-11">
-                                                        <input type={passwordVisible.confirm_password ? 'text' : 'password'} className="input-register" placeholder="Enter Confirm Password" onChange={(e)=> setConfirmPassword(e.target.value)} required/>
+                                                <div className="row field-password">
+                                                    <div className="col-sm-11 w-90">
+                                                        <input type={passwordVisible.confirm_password ? 'text' : 'password'} className="input-password" placeholder="Enter Confirm Password" onChange={(e)=> setConfirmPassword(e.target.value)} required/>
                                                     </div>
-                                                    <div className="col-md-1">
+                                                    <div className="col-sm-1 w-10">
                                                         <button className="btn btn-outline-secondary" type="button" onClick={()=>togglePasswordVisibility(1)}>
                                                             <i className={ passwordVisible.confirm_password ? "fa-sharp fa-regular fa-eye-slash" : "fa-sharp fa-regular fa-eye"}></i>
                                                         </button>
