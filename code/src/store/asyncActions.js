@@ -125,6 +125,22 @@ export const PlaceBid = async(contract, accounts, transaction)=>{
     return receipt;   
 }
 
+export const CancelBid = async(contract, accounts, transaction)=>{
+    const receipt =  await contract.methods.cancelBid(transaction.tokenID, transaction.index)
+    .send({
+        from: accounts[0],
+    });
+    return receipt;   
+}
+
+export const AcceptOffer = async(contract, accounts, transaction)=>{
+    const receipt =  await contract.methods.acceptOffer(transaction.tokenID, transaction.index)
+    .send({
+        from: accounts[0],
+    });
+    return receipt;   
+}
+
 
 function loadData(dispatch){
     firebaseDb.child('users').on('value', snapshot => {

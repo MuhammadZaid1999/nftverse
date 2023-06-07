@@ -2,11 +2,11 @@ import { useStore } from '../../context/GlobalState';
 import { useEffect, useState } from 'react';
 import { NFTVERSE_POLYGON_ADDRESS, NFTVERSE_BSC_ADDRESS, NFTVERSE_ETHEREUM_ADDRESS } from "../../contract/NFTVERSE";
 import swal from 'sweetalert';
-import { addNFTInDB, BuyNFT, PlaceBid ,getNFTs, getOwnerNFTs, addOrEdit, addOrEdit1 } from '../../store/asyncActions';
+import { addNFTInDB, BuyNFT, PlaceBid, CancelBid ,getNFTs, getOwnerNFTs, addOrEdit, addOrEdit1 } from '../../store/asyncActions';
 
 function ViewDetails(){
 
-    const [{web3, contract, accounts, user_data}] = useStore();
+    const [{web3, contract, accounts, user_data, network}] = useStore();
 
     const params = new URLSearchParams(window.location.search);
     const nft = JSON.parse(params.get("details"));
@@ -17,6 +17,8 @@ function ViewDetails(){
 
     const[offers, setOffers] = useState([]);
     const [placeOffer, setPlaceOffer] = useState(false); 
+
+    const[_cancelBid, _setCancelBid] = useState(false);
 
     useEffect(() => {
         (async() => {
@@ -33,7 +35,7 @@ function ViewDetails(){
                 setOffers(_offers);
             }
         })()
-    },[contract, pruchase, placeOffer]);
+    },[contract, pruchase, placeOffer, _cancelBid]);
 
 
     const buyNFT = async(tokenId, price) => {
@@ -81,7 +83,17 @@ function ViewDetails(){
                     addNFTInDB(nfts, "NFT List Updated");
 
                     setPurchase(true);
-                    swal({text: "NFT Purchased Successfully", icon: "success", className: "sweat-bg-color"});
+                    const el = document.createElement('div');
+                    if(network === 5){
+                        el.innerHTML = `Transaction Link: <a href='https://goerli.etherscan.io/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 97){
+                        el.innerHTML = `Transaction Link: <a href='https://testnet.bscscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 80001){
+                        el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    swal({text: "NFT Purchased Successfully", icon: "success", content: el, className: "sweat-bg-color"});
                 }
             }catch (error){
                 console.log("error trax = ",error); 
@@ -122,7 +134,17 @@ function ViewDetails(){
                 const transaction = await PlaceBid(contract, accounts, newTransaction);
                 if(transaction.status == true){
                     setPlaceOffer(true);
-                    swal({text: "Bid Placed Successfully", icon: "success", className: "sweat-bg-color"});
+                    const el = document.createElement('div');
+                    if(network === 5){
+                        el.innerHTML = `Transaction Link: <a href='https://goerli.etherscan.io/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 97){
+                        el.innerHTML = `Transaction Link: <a href='https://testnet.bscscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 80001){
+                        el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    swal({text: "Bid Placed Successfully", icon: "success", content: el, className: "sweat-bg-color"});
                 }
             }catch (error){
                 console.log("error trax = ",error); 
@@ -131,6 +153,48 @@ function ViewDetails(){
         }
     }
 
+    const cancelBid = async (tokenId, index, bidder_address) => {
+        const owner = await contract.methods.ownerOf(nft.id).call();
+
+        if(user_data.wallet_address !== accounts[0]){
+            swal({text: "Please Connect with correct Wallet", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(owner === accounts[0]){
+            swal({text: "Owner cannot cancel Bid", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(bidder_address !== accounts[0]){
+            swal({text: "You cannot cancel Bid", icon: "warning", className: "sweat-bg-color"});
+        }
+        else{
+            try {  
+                const newTransaction = {
+                    tokenID: tokenId,
+                    index: index
+                }
+                console.log(newTransaction)
+                const transaction = await CancelBid(contract, accounts, newTransaction);
+                if(transaction.status == true){
+                    _setCancelBid(true);
+                    const el = document.createElement('div');
+                    if(network === 5){
+                        el.innerHTML = `Transaction Link: <a href='https://goerli.etherscan.io/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 97){
+                        el.innerHTML = `Transaction Link: <a href='https://testnet.bscscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    else if(network === 80001){
+                        el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
+                    }
+                    swal({text: "Bid Canceled Successfully", icon: "success", content: el ,className: "sweat-bg-color"});
+                }
+            }catch (error){
+                console.log("error trax = ",error); 
+                swal({text: error.message, icon: "error", className: "sweat-bg-color"});
+            }
+        }
+    }
+    let counter = 0;
+    
     return(
         // <div className="Theme_ui">
             <div className="Create-Collection-section row">
@@ -141,7 +205,7 @@ function ViewDetails(){
                         <div className="container"> 
                             <div className="row">
                                 <div className="p-3 col-md-6">
-                                    <img className="buy-assets-images" src={nft.image} alt=""/>
+                                    <img className="my-assets-images" src={nft.image} alt=""/>
                                 </div>
                                 <div className="p-3 col-md-6">
                                     <a style={{color: "rgb(218,20,205)"}}>NFTVERSE</a>
@@ -177,11 +241,22 @@ function ViewDetails(){
                                                 <tbody>
                                                     {
                                                         offers.map((obj, index) => (
+                                                            obj.bidder !== "0x0000000000000000000000000000000000000000" ?
                                                             <tr>
-                                                                <td style={{ backgroundColor:'#120124'}}><b>{index + 1}</b></td>
-                                                                <td style={{ backgroundColor:'#120124'}}><b>{obj.bidPrice / 10 ** 18} ETH</b></td>
+                                                                <td style={{ backgroundColor:'#120124'}}><b>{++counter}</b></td>
+                                                                <td style={{ backgroundColor:'#120124'}}><b>{obj.bidPrice / (10 ** 18)} ETH</b></td>
                                                                 <td style={{ backgroundColor:'#120124'}}>{obj.bidder.slice(0,5)+".................."+obj.bidder.slice(37,42)}</td>
+                                                                {
+                                                                    obj.bidder === user_data.wallet_address ? 
+                                                                    <td style={{ backgroundColor:'#120124'}}>
+                                                                        <div className="intro-button">
+                                                                            <button type="submit" className="btn btn-primary" onClick={()=>cancelBid(nft.id, index, obj.bidder)}>Cancel</button>
+                                                                        </div>
+                                                                    </td>
+                                                                    : null
+                                                                }
                                                             </tr>
+                                                            : null
                                                         )) 
                                                     }  
                                                 </tbody>

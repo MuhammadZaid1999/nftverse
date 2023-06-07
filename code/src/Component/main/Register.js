@@ -1,6 +1,7 @@
 import firebaseDb from "../../firebase/config";
 import Web3 from "web3";
 import { useState, useEffect } from "react";
+import { MD5 } from "crypto-js";
 import { generateSecuriyCode } from "../../store/asyncActions";
 import swal from 'sweetalert';
 
@@ -12,10 +13,10 @@ function Register() {
         username: '',
         email: '',
         password: '',
-        confirm_password: '',
         nfts:[{id:'',name:'',image:'', description:'', network: '', attributes:[]}]
     }
     const [values, setValues] = useState(initialFieldValues);
+    const [confirm_password, setConfirmPassword] = useState("");
 
     const securityCode = {
         code: '',
@@ -28,6 +29,16 @@ function Register() {
         event.preventDefault();
     }
 
+    const [passwordVisible, setPasswordVisible] = useState({password: false, confirm_password: false});
+    const togglePasswordVisibility = (value) => {
+        if(value === 0){
+            setPasswordVisible({...passwordVisible, password: !passwordVisible.password});
+        }
+        else{
+            setPasswordVisible({...passwordVisible, confirm_password: !passwordVisible.confirm_password});
+        }
+    };
+
     useEffect(() => {
         let security_code = generateSecuriyCode();
         setSecurity({...security, code: security_code});
@@ -35,6 +46,7 @@ function Register() {
 
 
     const addOrEdit = async (obj) => {   
+        console.log('values ', obj);
         firebaseDb.child('users').push(
           obj,
           async err => {
@@ -45,8 +57,8 @@ function Register() {
                 await swal({text: "Registered Successfully", icon: "success"});
                 window.location.href = '/Login'
             }      
-        }
-    )}
+        })
+    }
 
     const connectWallet = async () => {
         const web3 = new Web3(Web3.givenProvider);
@@ -59,17 +71,20 @@ function Register() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(values)
+    
         if(values.wallet_address === ""){
             swal({text: "Connect Your Wallet", icon: "warning"});
         }
-        else if(values.password !== values.confirm_password){
+        else if(values.password !== confirm_password){
             swal({text: "Password and Confirm Password does not matched", icon: "error"});
         }
         else if(security.code !== security.confirmCode){
             swal({text: "Incorrect Security Code", icon: "error", className: "sweat-bg-color"});
         }
         else{
+            const encrypted = MD5(confirm_password).toString();
+            console.log(`encrypted ${encrypted}`);
+            values.password = encrypted;
             addOrEdit(values);
         }
     }
@@ -109,11 +124,29 @@ function Register() {
                                             </div>
                                             <div className="form-group">
                                                 <label className="field-title">Password</label>
-                                                <input type="password" className="input-register" placeholder="Enter Password" onChange={(e)=> setValues({...values, password: e.target.value })} required/>
+                                                <div className="row">
+                                                    <div className="col-md-11">
+                                                        <input type={passwordVisible.password ? 'text' : 'password'} className="input-register" placeholder="Enter Password" onChange={(e)=> setValues({...values, password: e.target.value })} required/>
+                                                    </div>
+                                                    <div className="col-md-1">
+                                                        <button className="btn btn-outline-secondary" type="button" onClick={()=>togglePasswordVisibility(0)}> 
+                                                            <i className={ passwordVisible.password ? "fa-sharp fa-regular fa-eye-slash" : "fa-sharp fa-regular fa-eye"}></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div className="form-group">
                                                 <label className="field-title">Confirm Password</label>
-                                                <input type="password" className="input-register" placeholder="Enter Confirm Password" onChange={(e)=> setValues({...values, confirm_password: e.target.value })} required/>
+                                                <div className="row">
+                                                    <div className="col-md-11">
+                                                        <input type={passwordVisible.confirm_password ? 'text' : 'password'} className="input-register" placeholder="Enter Confirm Password" onChange={(e)=> setConfirmPassword(e.target.value)} required/>
+                                                    </div>
+                                                    <div className="col-md-1">
+                                                        <button className="btn btn-outline-secondary" type="button" onClick={()=>togglePasswordVisibility(1)}>
+                                                            <i className={ passwordVisible.confirm_password ? "fa-sharp fa-regular fa-eye-slash" : "fa-sharp fa-regular fa-eye"}></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div className="form-group">
                                                 <div className="row">
