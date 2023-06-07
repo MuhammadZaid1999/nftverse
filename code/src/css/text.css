@@ -100,7 +100,11 @@
   font-weight: lighter;
 }
 
-
+.textCopied{
+  color: grey !important;
+  padding-left: 3%;
+  visibility: hidden;
+}
 nav{
   position: absolute;
   position: relative;
