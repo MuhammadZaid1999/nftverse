@@ -265,6 +265,12 @@ nav{
 .input-password:focus-visible{
   outline: none !important;
 }
+.btn-outline-secondary:focus-visible{
+  outline: none !important;
+}
+.btn-outline-secondary, .btn-outline-secondary:focus , .btn-outline-secondary:active:focus{
+  box-shadow: none;
+}
 .input-password{
   display: block; 
   background: none;
