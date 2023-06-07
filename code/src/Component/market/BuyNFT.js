@@ -194,12 +194,13 @@ function ViewDetails(){
         }
     }
     let counter = 0;
+    
     async function copyText(){
         navigator.clipboard.writeText(owner);
         document.getElementById("text-visible").style.visibility = "visible";
         console.log("Copied owner Address: " + owner);
-
     }
+
     return(
         // <div className="Theme_ui">
             <div className="Create-Collection-section row">
