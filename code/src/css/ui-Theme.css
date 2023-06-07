@@ -2,6 +2,10 @@
     margin-top: -0.5%;
     margin-left: 5%; 
 }
+.navbar-toggler{
+    margin-right: 1%;
+}
+
 .bg-nav{
     background-color: #000000a1;
 }
@@ -168,7 +172,7 @@
 
 @media screen and (max-width: 993px){
     .navbar-brand{
-        margin-left: 0 !important;
+        margin-left: 2% !important;
     }
     .logo-image {
         width: 40% !important;
@@ -304,6 +308,13 @@
     .add-layer {
         top: 17px !important;
         left: 275px !important;
+    }
+    .logo-bi-images {
+        margin: 13% !important;
+    }
+    .logo-image {
+        width: 49% !important;
+        height: 62% !important;
     }
 }
 @media screen and (max-width: 430px){
