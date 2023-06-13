@@ -115,6 +115,44 @@ function Home(){
                     </div>
                 </div> */}
             </div>
+            <div className="row Our-Team text-white">
+                <hr/>
+                    <h3 className="text-center main-sub-heading">Our Team</h3>
+                <hr/>
+                <div className="row">
+                    <div className="col-sm">
+                        <div className="flip-card">
+                            <div className="flip-card-inner">
+                                <div className="flip-card-front">
+                                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style={{width:"300px",height:"300px"}}/>
+                                </div>
+                                <div className="flip-card-back">
+                                <h3 className="team-member-name">Muhammad Zaid</h3> 
+                                <p>Blockchain Developer</p> 
+                                <p>Email : Zaid.aptechiic@gmail.com</p>
+                                <p>LinkedIn : <a className="linkedIn" href="https://www.linkedin.com/in/muhammad-zaid-01a296170">Muhammad Zaid</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-sm">
+                        <div className="flip-card">
+                            <div className="flip-card-inner">
+                                <div className="flip-card-front">
+                                <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style={{width:"300px",height:"300px"}}/>
+                                </div>
+                                <div className="flip-card-back">
+                                <h1>Abdul Qadir</h1> 
+                                <p>FrontEnd Developer</p> 
+                                <p>Email : Zaid.aptechiic@gmail.com</p>
+                                <p>LinkedIn : <a className="linkedIn" href="https://www.linkedin.com/in/muhammad-zaid-01a296170">Muhammad Zaid</a></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
         </div>
     )
 }

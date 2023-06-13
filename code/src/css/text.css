@@ -301,6 +301,11 @@ nav{
   font-weight: 600;
 }
 
+.team-member-name{
+  padding: 2%;
+  margin-top: 5%;
+}
+
 .nftGenerator-h1{
   padding: 0% 0 3% 0;
   font-size: 36px;
