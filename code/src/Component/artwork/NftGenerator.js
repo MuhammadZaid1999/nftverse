@@ -36,7 +36,7 @@ function NftGenerator(){
         let resJson = await res.json();
         console.log(`API RESPONSE = ${JSON.stringify(resJson)}`);
         if(resJson.message === "success"){
-            swal({text: `${layers[index]} Generated Successfully`, icon: "success", className: "sweat-bg-color"});
+            swal({text: `${layers[index]} Uploaded Successfully`, icon: "success", className: "sweat-bg-color"});
         }
     }
 
@@ -120,7 +120,7 @@ function NftGenerator(){
                                                             </svg> 
                                                             <span className="ml-1">Choose files…</span>
                                                         </label>
-                                                        <div className="intro-button"><button type="submit" className="btn btn-primary">Finalize</button></div>
+                                                        <div className="intro-button"><button type="submit" className="btn btn-primary">Upload</button></div>
                                                     </form>
                                                 </div>
                                             </div>
