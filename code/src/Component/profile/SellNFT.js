@@ -42,7 +42,7 @@ function SellNFT(){
         e.preventDefault();
 
         let nfts = await getNFTs();
-        let objIndex = nfts.findIndex((obj => (obj.id === nft.id)));
+        let objIndex = nfts.findIndex((obj => (obj.id === nft.id && obj.network === network)));
         nfts[objIndex].saleType = 2;
         console.log(nfts);
 
@@ -96,7 +96,7 @@ function SellNFT(){
         e.preventDefault();
 
         let nfts = await getNFTs();
-        let objIndex = nfts.findIndex((obj => (obj.id === nft.id)));
+        let objIndex = nfts.findIndex((obj => (obj.id === nft.id && obj.network === network)));
         nfts[objIndex].saleType = 1;
         console.log(nfts);
 
@@ -144,7 +144,7 @@ function SellNFT(){
     const acceptOffer = async (tokenId, index, bidder_address) => {
 
         let nfts = await getNFTs();
-        let objIndex = nfts.findIndex((obj => (obj.id === tokenId)));
+        let objIndex = nfts.findIndex((obj => (obj.id === tokenId && obj.network === network)));
         nfts[objIndex].saleType = 0;
         console.log("NFTs Updated List", nfts);
 
@@ -172,7 +172,7 @@ function SellNFT(){
                 const transaction = await AcceptOffer(contract, accounts, newTransaction);
                 if(transaction.status == true){
 
-                    let _index = user_data.nfts.findIndex((obj => (obj.id === tokenId)));
+                    let _index = user_data.nfts.findIndex((obj => (obj.id === tokenId && obj.network === network)));
                     user_data.nfts.splice(_index, 1);
                     console.log("delete nft from owner", user_data.nfts);
                     addOrEdit(user_data, "NFT Deleted");
@@ -194,7 +194,8 @@ function SellNFT(){
                     else if(network === 80001){
                         el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
                     }
-                    swal({text: "Offer Accepted Successfully", icon: "success", content: el ,className: "sweat-bg-color"});
+                    await swal({text: "Offer Accepted Successfully", icon: "success", content: el ,className: "sweat-bg-color"});
+                    window.location.href = '/'
                 }
             }catch (error){
                 console.log("error trax = ",error); 

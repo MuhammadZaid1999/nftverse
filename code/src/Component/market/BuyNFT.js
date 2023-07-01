@@ -40,8 +40,11 @@ function ViewDetails(){
 
     const buyNFT = async(tokenId, price) => {
 
+        let user_balance = await web3.eth.getBalance(accounts[0]);
+        user_balance /= 10 ** 18;
+
         let nfts = await getNFTs();
-        let objIndex = nfts.findIndex((obj => (obj.id === tokenId)));
+        let objIndex = nfts.findIndex((obj => (obj.id === tokenId && obj.network === network)));
         nfts[objIndex].saleType = 0;
         console.log("NFTs Updated List", nfts);
 
@@ -62,6 +65,9 @@ function ViewDetails(){
         else if(_nft.owner === accounts[0]){
             swal({text: "Owner cannot Buy NFT", icon: "warning", className: "sweat-bg-color"});
         } 
+        else if(user_balance < price){
+            swal({text: "Account Balance is not Enough for Buying NFT", icon: "warning", className: "sweat-bg-color"});
+        }
         else{
             try {  
                 const ethPrice = await web3.utils.toWei(String(price), "ether");
@@ -75,7 +81,7 @@ function ViewDetails(){
                     console.log("added on new User", user_data.nfts);
                     addOrEdit(user_data, "NFT Added");
 
-                    let index = owner_data.nfts.findIndex((obj => (obj.id === tokenId)));
+                    let index = owner_data.nfts.findIndex((obj => (obj.id === tokenId && obj.network === network)));
                     owner_data.nfts.splice(index, 1);
                     console.log("delete nft previsous user", owner_data);
                     addOrEdit1(UUID, owner_data, "NFT Deleted");
@@ -93,7 +99,8 @@ function ViewDetails(){
                     else if(network === 80001){
                         el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
                     }
-                    swal({text: "NFT Purchased Successfully", icon: "success", content: el, className: "sweat-bg-color"});
+                    await swal({text: "NFT Purchased Successfully", icon: "success", content: el, className: "sweat-bg-color"});
+                    window.location.href = '/'
                 }
             }catch (error){
                 console.log("error trax = ",error); 
@@ -116,11 +123,11 @@ function ViewDetails(){
         else if(owner === accounts[0]){
             swal({text: "Owner cannot Bid on NFT", icon: "warning", className: "sweat-bg-color"});
         }
-        else if(user_balance <= 0){
-            swal({text: "Account Balance is not Enough for placing Bid", icon: "warning", className: "sweat-bg-color"});
-        }
         else if(bidPrice <= 0){
             swal({text: "Bidding Price must be greater than 0", icon: "warning", className: "sweat-bg-color"});
+        }
+        else if(user_balance < bidPrice){
+            swal({text: "Account Balance is not Enough for placing Bid", icon: "warning", className: "sweat-bg-color"});
         }
 
         else{

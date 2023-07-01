@@ -127,6 +127,8 @@ function CreateNFT(){
         
         let user_balance = await web3.eth.getBalance(accounts[0]);
         user_balance /= 10 ** 18;
+
+        console.log(`mintFee = ${mintFee}, userBalance = ${user_balance}`)
      
         if(data.name === "" || data.description === "" || data.attributes.length === 0 || img_File === null || data.network === 0){
             swal({text: "Please Fill all the Fields", icon: "warning", className: "sweat-bg-color"});
@@ -134,7 +136,7 @@ function CreateNFT(){
         else if(user_data.wallet_address !== accounts[0]){
             swal({text: "Please Connect with correct Wallet", icon: "warning", className: "sweat-bg-color"});
         }
-        else if(user_balance >= mintFee){
+        else if(user_balance < (mintFee / 10 ** 18)){
             swal({text: "Account Balance is not Enough for Creating NFT", icon: "warning", className: "sweat-bg-color"});
         }    
         else{
@@ -168,7 +170,8 @@ function CreateNFT(){
                     else if(network === 80001){
                         el.innerHTML = `Transaction Link: <a href='https://mumbai.polygonscan.com/tx/${transaction.transactionHash}'>Check Transaction</a>`
                     }
-                    swal({text: "NFT Created Successfully", icon: "success", content: el, className: "sweat-bg-color"});
+                    await swal({text: "NFT Created Successfully", icon: "success", content: el, className: "sweat-bg-color"});
+                    window.location.href = '/'
                 }
             }catch (error){
                 console.log("error trax = ",error); 
