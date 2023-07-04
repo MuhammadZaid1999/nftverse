@@ -5,6 +5,8 @@ import "hardhat/console.sol";
 
 contract Lottery{
     
+    uint256 public lotteryID = 0;
+
     uint256 nonce;
 
     NFTVERSE public token;
@@ -33,9 +35,10 @@ contract Lottery{
         require(msg.sender == token.NFTVERSE_wallet(), "Deployer wallet must be NFTVERSE address");
     }
 
-    function createLottery(uint256 lotteryId, string memory title, uint threshold, uint256 numOfWinners) external onlyOwner{
-        require(lotteryDetails[lotteryId].status == lotteryStatus.notInitialized,"Lottery is already initialized or completed");
-        lotteryDetails[lotteryId]=LotteryDetails(title,threshold,numOfWinners,lotteryStatus.Initialized);
+    function createLottery(string memory title, uint threshold, uint256 numOfWinners) external onlyOwner{
+        lotteryID++;
+        require(lotteryDetails[lotteryID].status == lotteryStatus.notInitialized,"Lottery is already initialized or completed");
+        lotteryDetails[lotteryID]=LotteryDetails(title,threshold,numOfWinners,lotteryStatus.Initialized);
     }
    
 
@@ -57,7 +60,7 @@ contract Lottery{
         uint256 totalWinners = lotteryDetails[lotteryId].numOfWinners;
         for(uint256 i = 0; i < totalWinners; i++){
             address[] memory _participants = getParticipants(lotteryId);
-            uint256  = generateRandom(_participarandomNumbernts.length - 1);
+            uint256 randomNumber = generateRandom(_participants.length - 1);
             winners[lotteryId].push(_participants[randomNumber]);
 
             _participants[randomNumber] = _participants[_participants.length - 1];

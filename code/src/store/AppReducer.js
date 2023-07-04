@@ -40,12 +40,27 @@ export default (state, action) => {
           mintFee: action.payload
         }
 
+      case 'NFTVERSE_WALLET':
+        return {
+          ...state,
+          nftverse_wallet: action.payload
+        }  
+  
       case 'USER_DATA':
         return {
           ...state,
           user_data: action.payload
-        }     
+        }
         
+      
+      // Lottery
+      
+      case 'SETUP_LOTTERY_CONTRACT':
+        return {
+          ...state,
+          lottery_contract: action.payload
+        }  
+  
       default:
         return state;
     }

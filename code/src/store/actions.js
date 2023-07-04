@@ -42,10 +42,26 @@ export const setupMintFee = (data) => {
     };
 }
 
+export const setupNftverseWallet = (data) => {
+    return {
+        type: 'NFTVERSE_WALLET',
+        payload: data
+    };
+}
+
 export const userData = (data) => {
     return {
         type: 'USER_DATA',
         payload: data
+    };
+}
+
+// Lottery //
+
+export const setupLotteryContract = (contract) => {
+    return {
+        type: 'SETUP_LOTTERY_CONTRACT',
+        payload: contract
     };
 }
 

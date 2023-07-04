@@ -1,6 +1,7 @@
 import Web3 from "web3";
-import {setupWeb3, addNetwork, addEthereumAccounts, web3LoadingError, setupContract, setupMintFee, userData} from "./actions";
+import {setupWeb3, addNetwork, addEthereumAccounts, web3LoadingError, setupContract, setupMintFee, setupNftverseWallet, userData, setupLotteryContract} from "./actions";
 import { NFTVERSE_POLYGON_ADDRESS, NFTVERSE_BSC_ADDRESS, NFTVERSE_ETHEREUM_ADDRESS, NFTVERSE_ABI } from "../contract/NFTVERSE";
+import { NFTVERSE_LOTTERY_POLYGON_ADDRESS, NFTVERSE_LOTTERY_BSC_ADDRESS, NFTVERSE_LOTTERY_ETHEREUM_ADDRESS, NFTVERSE_LOTTERY_ABI } from "../contract/NFTVERSE_LOTTERY.js";
 
 import firebaseDb from "../firebase/config";
 import swal from 'sweetalert';
@@ -65,20 +66,32 @@ const web3Events = (dispatch) => {
 
 const getNetworkData = (networkId, dispatch) => {
     let contract = null;
+    let lottery_contract = null;
     if(networkId === 5){
-        contract = web3.eth.Contract(NFTVERSE_ABI, NFTVERSE_ETHEREUM_ADDRESS);
+        contract = new web3.eth.Contract(NFTVERSE_ABI, NFTVERSE_ETHEREUM_ADDRESS);
         dispatch(setupContract(contract))
+
+        lottery_contract = new web3.eth.Contract(NFTVERSE_LOTTERY_ABI, NFTVERSE_LOTTERY_ETHEREUM_ADDRESS);
+        dispatch(setupLotteryContract(lottery_contract))
     }
     else if(networkId === 80001){
         contract = new web3.eth.Contract(NFTVERSE_ABI, NFTVERSE_POLYGON_ADDRESS);
         dispatch(setupContract(contract))
+
+        lottery_contract = new web3.eth.Contract(NFTVERSE_LOTTERY_ABI, NFTVERSE_LOTTERY_POLYGON_ADDRESS);
+        console.log(lottery_contract)
+        dispatch(setupLotteryContract(lottery_contract))
     }
     else if(networkId === 97){
         contract = new web3.eth.Contract(NFTVERSE_ABI, NFTVERSE_BSC_ADDRESS);
         dispatch(setupContract(contract))
+
+        lottery_contract = new web3.eth.Contract(NFTVERSE_LOTTERY_ABI, NFTVERSE_LOTTERY_BSC_ADDRESS);
+        dispatch(setupLotteryContract(lottery_contract))
     }
     
     contract.methods.mintFee().call().then(mintFee => dispatch(setupMintFee(mintFee)));
+    contract.methods.nftverseWallet().call().then(value => dispatch(setupNftverseWallet(value)))
 }
 
 
@@ -249,6 +262,24 @@ export function generateSecuriyCode() {
       result += characters.charAt(randomIndex);
     }
     return result;
+}
+
+// Lottery
+
+export const CreateLottery = async(lottery_contract, accounts, transaction)=>{
+    const receipt = await lottery_contract.methods.createLottery(transaction.title, transaction.threshold, transaction.winners)
+    .send({
+        from: accounts[0],
+    });
+    return receipt;   
+}
+
+export const Participate = async(lottery_contract, accounts, transaction)=>{
+    const receipt = await lottery_contract.methods.registerParticipants(transaction.id)
+    .send({
+        from: accounts[0],
+    });
+    return receipt;   
 }
 
 

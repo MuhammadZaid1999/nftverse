@@ -11,7 +11,11 @@ const initialState = {
   web3Loadded: false,
   contract: null,
   mintFee: 0,
+  nftverse_wallet: "",
   user_data: {},
+
+  //Lottery
+  lottery_contract: null
 }
 
 // Create context

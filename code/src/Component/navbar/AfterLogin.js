@@ -69,18 +69,16 @@ export default function AfterLogin(){
             </nav>
         </div>
         {
-            <Router>
-                <Routes>
-                    <Route path="/" element={<MyProfile/>}></Route>
-                    <Route path="/MarketPlace" element={<MarketPlace/>}></Route>
-                    <Route path="/CreateNFT" element={<CreateNFT/>}></Route>
-                    <Route path="/ViewDetails" element={<BuyNFT/>}></Route>
-                    <Route path="/ViewProfileDetails" element={<SellNFT/>}></Route>
-                    <Route path="/Lottery" element={<Lottery/>}></Route>
-                    <Route path="/Stacking" element={<Stacking/>}></Route>
-                    <Route path="/NftGenerator" element={<NftGenerator/>}></Route>
-                </Routes>
-            </Router>
+            <Routes>
+                <Route path="/" element={<MyProfile/>}></Route>
+                <Route path="/MarketPlace" element={<MarketPlace/>}></Route>
+                <Route path="/CreateNFT" element={<CreateNFT/>}></Route>
+                <Route path="/ViewDetails" element={<BuyNFT/>}></Route>
+                <Route path="/ViewProfileDetails" element={<SellNFT/>}></Route>
+                <Route path="/Lottery" element={<Lottery/>}></Route>
+                <Route path="/Stacking" element={<Stacking/>}></Route>
+                <Route path="/NftGenerator" element={<NftGenerator/>}></Route>
+            </Routes>
         }
         </div>
     )
