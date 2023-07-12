@@ -152,7 +152,7 @@ function Register() {
                                             </div>
                                             <div className="form-group">
                                                 <div className="row">
-                                                    <label className="field-title">Security Code</label>
+                                                    <label className="field-title">Captcha Code</label>
                                                     <div className="col-md-5" style={{marginRight:"8%"}}>
                                                     <input type="text" className="input-register" value={security.code} style={{fontFamily: "'Shadows Into Light', cursive", cursor: "not-allowed"}} readOnly onCopy={(e) => disableCopy(e)}/>
                                                     </div>

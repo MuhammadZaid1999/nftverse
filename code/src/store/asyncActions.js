@@ -2,7 +2,6 @@ import Web3 from "web3";
 import {setupWeb3, addNetwork, addEthereumAccounts, web3LoadingError, setupContract, setupMintFee, setupNftverseWallet, userData, setupLotteryContract} from "./actions";
 import { NFTVERSE_POLYGON_ADDRESS, NFTVERSE_BSC_ADDRESS, NFTVERSE_ETHEREUM_ADDRESS, NFTVERSE_ABI } from "../contract/NFTVERSE";
 import { NFTVERSE_LOTTERY_POLYGON_ADDRESS, NFTVERSE_LOTTERY_BSC_ADDRESS, NFTVERSE_LOTTERY_ETHEREUM_ADDRESS, NFTVERSE_LOTTERY_ABI } from "../contract/NFTVERSE_LOTTERY.js";
-
 import firebaseDb from "../firebase/config";
 import swal from 'sweetalert';
 
@@ -263,6 +262,7 @@ export function generateSecuriyCode() {
     }
     return result;
 }
+
 
 // Lottery
 

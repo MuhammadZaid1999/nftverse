@@ -1,13 +1,9 @@
 import React from 'react';
-// import dotenv from "dotenv";
 import logo from '../../images/Group41.png';
 import { useEffect, useState } from "react";
-// import { MD5 } from "crypto-js";
+import { MD5 } from "crypto-js";
 import { generateSecuriyCode } from "../../store/asyncActions";
-
 import swal from 'sweetalert';
-
-// dotenv.configDotenv();
 
 export default function Main(){
     // dotenv.config();
@@ -44,8 +40,9 @@ export default function Main(){
         }
         else {
             let success = false;
-                    
-            if("admin" === values.username && values.password === "admin"){
+            const encrypted = MD5(values.password).toString(); 
+            console.log(process.env.REACT_APP_ADMIN_PASSWORD)
+            if(values.username === process.env.REACT_APP_ADMIN_USERNAME && encrypted === process.env.REACT_APP_ADMIN_PASSWORD){
                 success = true;
                 window.localStorage.setItem("admin_login_success", "true");
                 await swal({ text: "Login Successfully", icon: "success", className: "sweat-bg-color" });
@@ -106,7 +103,7 @@ export default function Main(){
                                         </div>
                                         <div className="form-group">
                                             <div className="row">
-                                                <label className="field-title">Security Code</label>
+                                                <label className="field-title">Captcha Code</label>
                                                 <div className="col-md-5" style={{ marginRight: "8%" }}>
                                                     <input type="text" className="input-register" value={values.securityCode} style={{ fontFamily: "'Shadows Into Light', cursive", cursor: "not-allowed" }} readOnly onCopy={(e) => disableCopy(e)} />
                                                 </div>

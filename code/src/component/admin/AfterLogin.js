@@ -6,8 +6,7 @@ import { BrowserRouter as Router, Route, Routes, NavLink} from "react-router-dom
 export default function AfterLogin(){
 
     const logout = () => {
-        window.localStorage.removeItem('login_success');
-        window.localStorage.removeItem('UUID');
+        window.localStorage.removeItem('admin_login_success');
     }
 
     return (
@@ -25,6 +24,9 @@ export default function AfterLogin(){
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                             <li>
                                 <a className="nav-link" href="/admin">Lottery </a>
+                            </li>
+                            <li>
+                                <a className="nav-link" href="/admin" onClick={logout}>Logout </a>
                             </li>        
                         </ul>
 
