@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 
 contract Lottery{
     
-    uint256 lotteryId = 0;
+    uint256 public lotteryID = 0;
 
     uint256 nonce;
 
@@ -36,9 +36,9 @@ contract Lottery{
     }
 
     function createLottery(string memory title, uint threshold, uint256 numOfWinners) external onlyOwner{
-        lotteryId++;
-        require(lotteryDetails[lotteryId].status == lotteryStatus.notInitialized,"Lottery is already initialized or completed");
-        lotteryDetails[lotteryId]=LotteryDetails(title,threshold,numOfWinners,lotteryStatus.Initialized);
+        lotteryID++;
+        require(lotteryDetails[lotteryID].status == lotteryStatus.notInitialized,"Lottery is already initialized or completed");
+        lotteryDetails[lotteryID]=LotteryDetails(title,threshold,numOfWinners,lotteryStatus.Initialized);
     }
    
 

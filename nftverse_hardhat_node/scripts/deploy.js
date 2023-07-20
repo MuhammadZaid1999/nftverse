@@ -8,10 +8,15 @@ const hre = require("hardhat");
 
 async function main() {
  
-  const Nftverse = await hre.ethers.getContractFactory("NFTVERSE");
-  const nftverse = await Nftverse.deploy();
-  await nftverse.deployed();
-  console.log(`NFTVERSE deployed to ${nftverse.address}`);
+  // const Nftverse = await hre.ethers.getContractFactory("NFTVERSE");
+  // const nftverse = await Nftverse.deploy();
+  // await nftverse.deployed();
+  // console.log(`NFTVERSE deployed to ${nftverse.address}`);
+
+  const Lottery = await hre.ethers.getContractFactory("Lottery");
+  const lottery = await Lottery.deploy("0x50CbBef7f41BAa59A64Baf9b17a1F04A3D2f4FCA");
+  await lottery.deployed();
+  console.log(`LOTTERY deployed to ${lottery.address}`);
 
 }
 
