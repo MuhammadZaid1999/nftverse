@@ -1,5 +1,6 @@
 import logo from '../../images/Group41.png';
 import Lottery from './Lottery';
+import Staking from './Staking';
 import { BrowserRouter as Router, Route, Routes, NavLink} from "react-router-dom";
 
 
@@ -26,6 +27,9 @@ export default function AfterLogin(){
                                 <a className="nav-link" href="/admin">Lottery </a>
                             </li>
                             <li>
+                                <a className="nav-link" href="/admin/staking">Staking </a>
+                            </li>
+                            <li>
                                 <a className="nav-link" href="/admin" onClick={logout}>Logout </a>
                             </li>        
                         </ul>
@@ -37,6 +41,7 @@ export default function AfterLogin(){
         {
             <Routes>
                 <Route path="/" element={<Lottery/>}></Route>
+                <Route path="/staking" element={<Staking/>}></Route>
             </Routes>
         }
         </div>

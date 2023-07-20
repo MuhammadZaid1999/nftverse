@@ -44,13 +44,15 @@ describe("NFTVERSE Contract's flow test", async() => {
         await expect(nftverse.connect(addr2).createNFT("abcd", {value: ethers.utils.parseEther(mintPrice)})).not.to.be.reverted;
         await expect(nftverse.connect(addr2).createNFT("abcd", {value: ethers.utils.parseEther(mintPrice)})).not.to.be.reverted;
         await expect(nftverse.connect(addr2).createNFT("abcd", {value: ethers.utils.parseEther(mintPrice)})).not.to.be.reverted;
+      
+        console.log("balanceOf after minting = ", await nftverse.balanceOf(addr2.address))
       });
     });
 
     describe("Stake NFT", function () {
       it("NFT should be staked", async function () {
-        // await expect(nftverse.connect(addr2).approve(staking.address, 1)).not.to.be.reverted;
-        // await expect(staking.connect(addr2).stakeNFT(1, 1)).not.to.be.reverted;
+        await expect(nftverse.connect(addr2).approve(staking.address, 1)).not.to.be.reverted;
+        await expect(staking.connect(addr2).stakeNFT(1, 1)).not.to.be.reverted;
 
         // await expect(nftverse.connect(addr2).approve(staking.address, 2)).not.to.be.reverted;
         // await expect(staking.connect(addr2).stakeNFT(2, 2)).not.to.be.reverted;
@@ -58,26 +60,24 @@ describe("NFTVERSE Contract's flow test", async() => {
         // await expect(nftverse.connect(addr2).approve(staking.address, 3)).not.to.be.reverted;
         // await expect(staking.connect(addr2).stakeNFT(3, 3)).not.to.be.reverted;
         
-        await expect(nftverse.connect(addr2).approve(staking.address, 4)).not.to.be.reverted;
-        await expect(staking.connect(addr2).stakeNFT(4, 4)).not.to.be.reverted;
-        console.log("balance Of = ", await nftverse.balanceOf(addr2.address));
+        console.log("balanceOf after stacking = ", await nftverse.balanceOf(addr2.address));
 
       });
     });
 
     describe("Calculate Reward", function () {
 
-      // it("Should be calculate Reward for weekly staking", async function () {
-      //   let currentTime = await time.latest();
-      //   for(let i=0; i<=6; i++){
-      //       if(i!=0){
-      //         const newTime = (currentTime + (ONE_DAY_IN_SECS * i));
-      //         await time.increaseTo(newTime);
-      //       }
-      //       let reward = await staking.calculateReward(addr2.address, 1);
-      //       console.log("Reward =", reward);
-      //   }
-      // });
+      it("Should be calculate Reward for weekly staking", async function () {
+        let currentTime = await time.latest();
+        for(let i=0; i<=8; i++){
+            if(i!=0){
+              const newTime = (currentTime + (ONE_DAY_IN_SECS * i));
+              await time.increaseTo(newTime);
+            }
+            let reward = await staking.calculateReward(addr2.address, 1);
+            console.log("Reward =", reward);
+        }
+      });
 
       // it("Should be calculate Reward for monthly staking", async function () {
       //   let currentTime = await time.latest();
@@ -103,18 +103,6 @@ describe("NFTVERSE Contract's flow test", async() => {
       //   }
       // });
 
-        it("Should be calculate Reward for yearly staking", async function () {
-          let currentTime = await time.latest();
-          for(let i=0; i<=366; i++){
-              if(i!=0){
-                const newTime = (currentTime + (ONE_DAY_IN_SECS * i));
-                await time.increaseTo(newTime);
-              }
-              let reward = await staking.calculateReward(addr2.address, 4);
-              console.log("Reward =", reward);
-          }
-        });
-
         // it("Should be claim Reward", async function () {
         //   await expect(staking.connect(addr2).claimReward(1)).not.to.be.reverted;
 
@@ -133,7 +121,7 @@ describe("NFTVERSE Contract's flow test", async() => {
         // });
 
         it("Should be unStake and claim Reward", async function () {
-          await expect(staking.connect(addr2).unStakeNFT(4)).not.to.be.reverted;
+          await expect(staking.connect(addr2).unStakeNFT(1)).not.to.be.reverted;
 
           const stakingContractBalance = await ethers.provider.getBalance(staking.address);
           console.log("Staking contract balance = ", stakingContractBalance);

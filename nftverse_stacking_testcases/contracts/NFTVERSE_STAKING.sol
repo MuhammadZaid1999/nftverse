@@ -10,12 +10,10 @@ contract NFTVERSE_STAKING{
     //     1 for Weekly
     //     2 for Monthly
     //     3 for Quaterly
-    //     4 for Yearly
-    uint256 weeklyReward = 0.00007 ether;
-    uint256 monthlyReward = 0.0003 ether;
-    uint256 quaterlyReward = 0.092 ether;
-    uint256 yearlyReward = 0.365 ether;
-
+    uint256 weeklyReward = 0.001 ether;
+    uint256 monthlyReward = 0.01 ether;
+    uint256 quaterlyReward = 0.1 ether;
+   
     NFTVERSE public token;
 
     struct Stacking{
@@ -51,9 +49,6 @@ contract NFTVERSE_STAKING{
         else if(stakeType == 3){
             NFTStaked[msg.sender][tokenId] = Stacking(block.timestamp, block.timestamp + 92 days, stakeType ,true);
         }
-        else{
-            NFTStaked[msg.sender][tokenId] = Stacking(block.timestamp, block.timestamp + 365 days, stakeType, true);
-        }
         token.transferFrom(msg.sender,address(this), tokenId);
         userStakedNFTs[msg.sender] += 1;
     }
@@ -88,9 +83,6 @@ contract NFTVERSE_STAKING{
         else if(stakeType == 3){
             payable(msg.sender).transfer(quaterlyReward);
         }
-        else{
-            payable(msg.sender).transfer(yearlyReward);
-        }
 
         token._transfer(address(this),msg.sender, tokenId);
         NFTStaked[msg.sender][tokenId] = Stacking(0, 0, 0,false);
@@ -119,12 +111,8 @@ contract NFTVERSE_STAKING{
                 uint256 reward = (monthlyReward / 30) * stakeDays;
                 return reward; 
             }
-            else if(stakeType == 3){
-                uint256 reward = (quaterlyReward / 92) * stakeDays;
-                return reward;
-            }
             else{
-                uint256 reward = (yearlyReward / 365) * stakeDays;
+                uint256 reward = (quaterlyReward / 92) * stakeDays;
                 return reward;
             }
         }
@@ -135,11 +123,8 @@ contract NFTVERSE_STAKING{
             else if(stakeType == 2){
                 return monthlyReward; 
             }
-            else if(stakeType == 3){
-                return quaterlyReward; 
-            }
             else{
-                return yearlyReward; 
+                return quaterlyReward; 
             }
         }
         
