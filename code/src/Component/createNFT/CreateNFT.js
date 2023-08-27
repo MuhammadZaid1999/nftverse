@@ -4,11 +4,13 @@ import axios from 'axios';
 
 import { useStore } from "../../context/GlobalState";
 import { NFTMinting, addNFTInDB, addOrEdit, getNFTs } from "../../store/asyncActions";
-import firebaseDb from "../../firebase/config";
+
+import { Elements } from "@stripe/react-stripe-js"
+import { loadStripe } from "@stripe/stripe-js"
 
 import swal from 'sweetalert';
 import Username from "../navbar/Username";
-
+import StripeForm from "./StripeForm"
 
 function CreateNFT(){
 
@@ -84,6 +86,8 @@ function CreateNFT(){
         setData({...data, attributes: attr}); 
     }
 
+    const [paymentOption, setPaymentOption] = useState(false);
+
     const upload_ipfs_data = async () => {
         try{
             const formData = new FormData();
@@ -122,7 +126,6 @@ function CreateNFT(){
     
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         let nfts = await getNFTs();
         
         let user_balance = await web3.eth.getBalance(accounts[0]);
@@ -180,6 +183,9 @@ function CreateNFT(){
         }
     }
 
+    const PUBLIC_KEY = "pk_test_51NeeX8ENXusa1nSFiigEMpAGYH73zdQiMRoUqLPe2RYdjFyVad0mEEVobDyEUG3ffDL47XkyXcnWBvnB7Y3ETVNI00CKqAkE7m";
+    const stripeTestPromise = loadStripe(PUBLIC_KEY)
+
     return(
         // <div className="Theme_ui">
             <div className="Create-Collection-section row">
@@ -192,7 +198,7 @@ function CreateNFT(){
                             <div className="container">
                                 <div className="Create-Collection-Title row"> 
                                     <h1 className="Create-collection-head">Create an NFT</h1> 
-                                    <p className="Create-collection-head"><b>Note: Fee For Creating NFT is {mintFee / 10 ** 18} ETH </b></p> 
+                                    {/* <p className="Create-collection-head"><b>Note: Fee For Creating NFT is {mintFee / 10 ** 18} ETH </b></p>  */}
                                 </div>
                                 <div className="Create-Collection-form row ">
                                     <div className="logo-image-field">
@@ -205,7 +211,7 @@ function CreateNFT(){
                                           {
                                             displayImage == null ? 
                                             <div className="logo-image">
-                                                <input type="file" style={{opacity:'0'}} onChange={imageFile}/>
+                                                <input type="file" id="image" style={{opacity:'0'}} onChange={imageFile}/>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" className="bi bi-images logo-bi-images" viewBox="0 0 16 16">
                                                     <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" fill="#585858"/>
                                                     <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2zM14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1zM2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1h-10z" fill="#585858"/>
@@ -258,14 +264,59 @@ function CreateNFT(){
                                                     : null 
                                             }
                                     </div>
+                                    <div className="nft-description-field">
+                                        <label className="field-title">Payment Options</label>
+                                            <div class="form-switch" style={{marginRight: '3%'}}>
+                                                <label> Pay with Wallet</label>
+                                                <span style={{marginLeft: '4%'}}>
+                                                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onChange={()=> setPaymentOption(!paymentOption)}/>
+                                                    <label class="form-check-label" for="flexSwitchCheckDefault" style={{marginLeft:'1%'}}> Pay with Card</label>
+                                                </span>
+                                            </div>
+                                    </div>
                                     <div className="category-field">
                                         <br/>
-                                        <div className="intro-button">
-                                           <button type="button" className="btn btn-primary" onClick={(e)=>handleSubmit(e)}>Create an NFT</button>
-                                        </div>
+                                        {
+                                            !paymentOption ? 
+                                            <>
+                                            <p className="Create-collection-head"><b>Note: Fee For Creating NFT is {mintFee / 10 ** 18} ETH </b></p> 
+                                            <div className="intro-button">
+                                                <button type="button" className="btn btn-primary" onClick={(e)=>handleSubmit(e)}>Create an NFT</button>
+                                            </div>
+                                            </>
+                                            :
+                                            <>
+                                            <p className="Create-collection-head"><b>Note: Fee For Creating NFT is 0.5 USD</b></p>
+                                            <div className="intro-button">
+                                                <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Create an NFT</button>
+                                            </div>
+                                            </> 
+                                        }
                                     </div>
                                 </div>
                                 
+                                <div className="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div className="modal-dialog">
+                                        <div className="modal-content">
+                                            <div className="modal-header">
+                                                <h5 className="modal-title" id="exampleModalLabel">Pay With Card</h5>
+                                                <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div className="modal-body">
+                                                <div className="row">
+                                                    <div className="col-md mx-auto">
+                                                    <Elements stripe={stripeTestPromise}>
+                                                        <StripeForm data={data} img_File={img_File}/>
+                                                    </Elements>  
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* <div className="modal-footer">
+                                                <button type="button" className="btn custom-btn" onClick={(e) => generateArtWork(e)}>Generate ArtWork</button>
+                                            </div> */}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </center>
                         

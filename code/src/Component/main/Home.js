@@ -46,7 +46,7 @@ function Home(){
                             <h5 className='text-center font-size-22'>Weekly Stake</h5>
                         </div>
                         <div className='row mt-3'>
-                            <h6 className='text-center font-size-22'>Reward: <b className="">0.0001 ETH</b> </h6>
+                            <h6 className='text-center font-size-22'>Reward: <b className="">0.001 ETH</b> </h6>
                         </div>
                     </div>
                     <div className='col-sm reward-box'>
@@ -54,7 +54,7 @@ function Home(){
                             <h5 className='text-center font-size-22'>Monthly Stake</h5>
                         </div>
                         <div className='row  mt-3'>
-                            <h6 className='text-center font-size-22'>Reward: <b>0.001 ETH</b> </h6>
+                            <h6 className='text-center font-size-22'>Reward: <b>0.01 ETH</b> </h6>
                         </div>
                     </div>
                     <div className='col-sm reward-box'>
@@ -62,7 +62,7 @@ function Home(){
                             <h5 className='text-center font-size-22'>Quartely Stake</h5>
                         </div>
                         <div className='row mt-3'>
-                            <h6 className='text-center font-size-22'>Reward: <b>0.01 ETH</b> </h6>
+                            <h6 className='text-center font-size-22'>Reward: <b>0.1 ETH</b> </h6>
                         </div>
                     </div>
 

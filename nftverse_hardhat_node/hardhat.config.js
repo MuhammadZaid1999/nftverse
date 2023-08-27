@@ -15,8 +15,8 @@ module.exports = {
     testnet: {
       url: "https://data-seed-prebsc-1-s1.binance.org:8545",
       chainId: 97,
-      gasPrice: 20000000000,
-      accounts: {mnemonic: process.env.mnemonic}
+      // gasPrice: 100000000000,
+      accounts: {mnemonic: process.env.mnemonic},
     },
     goerli: {
       url: "https://goerli.infura.io/v3/" + process.env.INFURA_PROJECT_ID,

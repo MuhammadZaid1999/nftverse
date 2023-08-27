@@ -27,7 +27,6 @@ function MyProfile() {
                 set_user_nfts(filteredData);
             }
         }
-            
     },[user_data, network]);
 
     return (

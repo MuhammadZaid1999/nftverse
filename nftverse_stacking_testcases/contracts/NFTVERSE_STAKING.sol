@@ -6,6 +6,8 @@ import "hardhat/console.sol";
 
 contract NFTVERSE_STAKING{
 
+    uint256 public totalStacked = 0; 
+
     //  Stake Duration:
     //     1 for Weekly
     //     2 for Monthly
@@ -25,6 +27,7 @@ contract NFTVERSE_STAKING{
 
     mapping(address => mapping(uint256 => Stacking)) private NFTStaked;
     mapping(address => uint256) public userStakedNFTs;
+    mapping(uint256 => address) public stakeWallet;
 
 
     constructor(address _token){
@@ -51,6 +54,8 @@ contract NFTVERSE_STAKING{
         }
         token.transferFrom(msg.sender,address(this), tokenId);
         userStakedNFTs[msg.sender] += 1;
+        stakeWallet[tokenId] = msg.sender;
+        totalStacked += 1;
     }
 
     function unStakeNFT(uint256 tokenId) external {
@@ -61,9 +66,11 @@ contract NFTVERSE_STAKING{
             claimReward(tokenId);
         }
         else{
-            token._transfer(address(this), msg.sender, tokenId);
+            token.safeTransferFrom(address(this), msg.sender, tokenId);
             NFTStaked[msg.sender][tokenId] = Stacking(0, 0, 0,false);
             userStakedNFTs[msg.sender] -= 1;
+            stakeWallet[tokenId] = address(0);
+            totalStacked -= 1;
         }
     }
 
@@ -84,9 +91,11 @@ contract NFTVERSE_STAKING{
             payable(msg.sender).transfer(quaterlyReward);
         }
 
-        token._transfer(address(this),msg.sender, tokenId);
+        token.safeTransferFrom(address(this),msg.sender, tokenId);
         NFTStaked[msg.sender][tokenId] = Stacking(0, 0, 0,false);
         userStakedNFTs[msg.sender] -= 1;
+        stakeWallet[tokenId] = address(0);
+        totalStacked -= 1;
     }
 
     function getStakingData(address addr, uint256 tokenId) public view returns(Stacking memory){
@@ -128,6 +137,11 @@ contract NFTVERSE_STAKING{
             }
         }
         
+    }
+
+    function widthdrawEth() external {
+        require(msg.sender == token.NFTVERSE_wallet(), "Owner wallet must be NFTVERSE address");
+        payable(msg.sender).transfer(address(this).balance);
     }
 
 }

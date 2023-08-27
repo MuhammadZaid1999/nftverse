@@ -13,10 +13,15 @@ async function main() {
   // await nftverse.deployed();
   // console.log(`NFTVERSE deployed to ${nftverse.address}`);
 
-  const Lottery = await hre.ethers.getContractFactory("Lottery");
-  const lottery = await Lottery.deploy("0x50CbBef7f41BAa59A64Baf9b17a1F04A3D2f4FCA");
-  await lottery.deployed();
-  console.log(`LOTTERY deployed to ${lottery.address}`);
+  // const Lottery = await hre.ethers.getContractFactory("Lottery");
+  // const lottery = await Lottery.deploy("0x50CbBef7f41BAa59A64Baf9b17a1F04A3D2f4FCA");
+  // await lottery.deployed();
+  // console.log(`LOTTERY deployed to ${lottery.address}`);
+
+  const Stacking = await hre.ethers.getContractFactory("NFTVERSE_STAKING");
+  const stacking = await Stacking.deploy("0xbAeb166E062C2cDd5fBc58c0cf13A037F5D5FD52");
+  await stacking.deployed();
+  console.log(`STACKING deployed to ${stacking.address}`);
 
 }
 

@@ -65,3 +65,12 @@ export const setupLotteryContract = (contract) => {
     };
 }
 
+// Staking //
+
+export const setupStakingContract = (contract) => {
+    return {
+        type: 'SETUP_STAKING_CONTRACT',
+        payload: contract
+    };
+}
+

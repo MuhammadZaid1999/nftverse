@@ -1,7 +1,8 @@
 import Web3 from "web3";
-import {setupWeb3, addNetwork, addEthereumAccounts, web3LoadingError, setupContract, setupMintFee, setupNftverseWallet, userData, setupLotteryContract} from "./actions";
+import {setupWeb3, addNetwork, addEthereumAccounts, web3LoadingError, setupContract, setupMintFee, setupNftverseWallet, userData, setupLotteryContract, setupStakingContract} from "./actions";
 import { NFTVERSE_POLYGON_ADDRESS, NFTVERSE_BSC_ADDRESS, NFTVERSE_ETHEREUM_ADDRESS, NFTVERSE_ABI } from "../contract/NFTVERSE";
 import { NFTVERSE_LOTTERY_POLYGON_ADDRESS, NFTVERSE_LOTTERY_BSC_ADDRESS, NFTVERSE_LOTTERY_ETHEREUM_ADDRESS, NFTVERSE_LOTTERY_ABI } from "../contract/NFTVERSE_LOTTERY.js";
+import { NFTVERSE_STAKING_POLYGON_ADDRESS, NFTVERSE_STAKING_BSC_ADDRESS, NFTVERSE_STAKING_ETHEREUM_ADDRESS, NFTVERSE_STAKING_ABI } from "../contract/NFTVERSE_STAKING.js";
 import firebaseDb from "../firebase/config";
 import swal from 'sweetalert';
 
@@ -66,20 +67,29 @@ const web3Events = (dispatch) => {
 const getNetworkData = (networkId, dispatch) => {
     let contract = null;
     let lottery_contract = null;
+    let staking_contract = null;
     if(networkId === 5){
         contract = new web3.eth.Contract(NFTVERSE_ABI, NFTVERSE_ETHEREUM_ADDRESS);
         dispatch(setupContract(contract))
 
         lottery_contract = new web3.eth.Contract(NFTVERSE_LOTTERY_ABI, NFTVERSE_LOTTERY_ETHEREUM_ADDRESS);
         dispatch(setupLotteryContract(lottery_contract))
+
+        staking_contract = new web3.eth.Contract(NFTVERSE_STAKING_ABI, NFTVERSE_STAKING_ETHEREUM_ADDRESS);
+        // dispatch(setupStakingContract(staking_contract))
     }
     else if(networkId === 80001){
         contract = new web3.eth.Contract(NFTVERSE_ABI, NFTVERSE_POLYGON_ADDRESS);
+        console.log(contract)
         dispatch(setupContract(contract))
 
         lottery_contract = new web3.eth.Contract(NFTVERSE_LOTTERY_ABI, NFTVERSE_LOTTERY_POLYGON_ADDRESS);
         console.log(lottery_contract)
         dispatch(setupLotteryContract(lottery_contract))
+
+        staking_contract = new web3.eth.Contract(NFTVERSE_STAKING_ABI, NFTVERSE_STAKING_POLYGON_ADDRESS);
+        console.log(staking_contract)
+        dispatch(setupStakingContract(staking_contract))
     }
     else if(networkId === 97){
         contract = new web3.eth.Contract(NFTVERSE_ABI, NFTVERSE_BSC_ADDRESS);
@@ -87,6 +97,9 @@ const getNetworkData = (networkId, dispatch) => {
 
         lottery_contract = new web3.eth.Contract(NFTVERSE_LOTTERY_ABI, NFTVERSE_LOTTERY_BSC_ADDRESS);
         dispatch(setupLotteryContract(lottery_contract))
+
+        staking_contract = new web3.eth.Contract(NFTVERSE_STAKING_ABI, NFTVERSE_STAKING_BSC_ADDRESS);
+        dispatch(setupStakingContract(staking_contract))
     }
     
     contract.methods.mintFee().call().then(mintFee => dispatch(setupMintFee(mintFee)));
@@ -252,6 +265,40 @@ export const addNFTInDB = (obj, msg) => {
 }
 
 
+export function getStripeNFTs(){
+    return new Promise((resolve, reject) => {
+        firebaseDb.child('stripe_nfts').on('value', snapshot => {
+            if (snapshot.val() != null) {
+                let nfts = [];
+                let data = snapshot.val();
+                nfts = data["-NV4hOCjMnVfFMMQc9TI"];
+                resolve(nfts);
+            }
+            else{
+                resolve([]);
+            }
+        }, error => {
+            reject(error);
+        }); 
+    });
+}
+
+
+export const addStrpieNFTInDB = (obj, msg) => {
+    firebaseDb.child('stripe_nfts/-NV4hOCjMnVfFMMQc9TI').set(
+        obj,
+        err => {
+            if (err){
+                console.log("Error ",err)
+            }
+            else{
+                console.log(msg)
+            } 
+        },
+    )
+}
+
+
 export function generateSecuriyCode() {
     let result = '';
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -281,6 +328,47 @@ export const Participate = async(lottery_contract, accounts, transaction)=>{
     });
     return receipt;   
 }
+
+
+// Stcking
+
+export const AddFundInStacking = async (accounts, staking_contract, transaction)=>{
+    const receipt = await web3.eth.sendTransaction({
+        from: accounts[0],
+        to: staking_contract,
+        value: web3.utils.toWei(transaction.ethAmount, 'ether'),
+      });
+    return receipt;   
+}
+
+export const StakeNFT = async(contract, staking_contract, accounts, transaction)=>{
+    await contract.methods.approve(staking_contract.options.address, transaction.token_id)
+    .send({
+        from: accounts[0],
+    });
+    const receipt = await staking_contract.methods.stakeNFT(transaction.token_id, transaction.stakeType)
+    .send({
+        from: accounts[0],
+    });
+    return receipt;   
+}
+
+export const UnstakeNFT = async(staking_contract, accounts, transaction)=>{
+    const receipt = await staking_contract.methods.unStakeNFT(transaction.token_id)
+    .send({
+        from: accounts[0],
+    });
+    return receipt;   
+}
+
+export const ClaimReward = async(staking_contract, accounts, transaction)=>{
+    const receipt = await staking_contract.methods.claimReward(transaction.token_id)
+    .send({
+        from: accounts[0],
+    });
+    return receipt;   
+}
+
 
 
 

@@ -15,7 +15,10 @@ const initialState = {
   user_data: {},
 
   //Lottery
-  lottery_contract: null
+  lottery_contract: null,
+
+  //Staking
+  staking_contract: null
 }
 
 // Create context

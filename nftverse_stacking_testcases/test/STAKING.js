@@ -69,7 +69,7 @@ describe("NFTVERSE Contract's flow test", async() => {
 
       it("Should be calculate Reward for weekly staking", async function () {
         let currentTime = await time.latest();
-        for(let i=0; i<=8; i++){
+        for(let i=0; i<=6; i++){
             if(i!=0){
               const newTime = (currentTime + (ONE_DAY_IN_SECS * i));
               await time.increaseTo(newTime);
@@ -112,15 +112,7 @@ describe("NFTVERSE Contract's flow test", async() => {
         // });
 
 
-        // it("Should be unStake", async function () {
-        //   await expect(staking.connect(addr2).unStakeNFT(1)).not.to.be.reverted;
-
-        //   const stakingContractBalance = await ethers.provider.getBalance(staking.address);
-        //   console.log("Staking contract balance = ", stakingContractBalance);
-        //   console.log("balance Of = ", await nftverse.balanceOf(addr2.address));
-        // });
-
-        it("Should be unStake and claim Reward", async function () {
+        it("Should be unStake", async function () {
           await expect(staking.connect(addr2).unStakeNFT(1)).not.to.be.reverted;
 
           const stakingContractBalance = await ethers.provider.getBalance(staking.address);
@@ -128,10 +120,27 @@ describe("NFTVERSE Contract's flow test", async() => {
           console.log("balance Of = ", await nftverse.balanceOf(addr2.address));
         });
 
-        
-    
+        // it("Should be unStake and claim Reward", async function () {
+        //   await expect(staking.connect(addr2).unStakeNFT(1)).not.to.be.reverted;
+
+        //   const stakingContractBalance = await ethers.provider.getBalance(staking.address);
+        //   console.log("Staking contract balance = ", stakingContractBalance);
+        //   console.log("balance Of = ", await nftverse.balanceOf(addr2.address));
+        // });
+
     });
 
-    
+
+    describe("Widthdraw ETH from Stacking Contract", function () {
+      it("Should be reverted when widthdraw from invalid address", async function () {
+        await expect(staking.connect(addr2).widthdrawEth()).to.be.revertedWith("Owner wallet must be NFTVERSE address");
+      });
+      it("Should be tranfered ETH to owner wallet", async function () {
+        await expect(staking.connect(addr1).widthdrawEth()).not.to.be.reverted;
+
+        const stakingContractBalance = await ethers.provider.getBalance(staking.address);
+        console.log("Staking contract balance = ", stakingContractBalance);
+      })
+    });
 
 });

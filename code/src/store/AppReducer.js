@@ -60,6 +60,14 @@ export default (state, action) => {
           ...state,
           lottery_contract: action.payload
         }  
+
+       // Staking
+      
+       case 'SETUP_STAKING_CONTRACT':
+        return {
+          ...state,
+          staking_contract: action.payload
+        }    
   
       default:
         return state;
